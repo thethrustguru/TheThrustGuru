@@ -162,14 +162,14 @@ namespace TheThrustGuru
 
         private async void addFoodButton_Click(object sender, EventArgs e)
         {
-            AddFoodItems addItems = new AddFoodItems();
-            DialogResult result  = addItems.ShowDialog();
-            if(result == DialogResult.OK && addItems.foodItems != null)
-            {
-                new UpdateDataGridView().updateData(addItems.foodItems, this.dataGridView1);
-                DatabaseOperations.addSingleData(addItems.foodItems);
-                await postDataToServerAsync(addItems.foodItems);
-            }
+            //AddItem addItems = new AddItem();
+            //DialogResult result  = addItems.ShowDialog();
+            //if(result == DialogResult.OK && addItems.foodItems != null)
+            //{
+            //    new UpdateDataGridView().updateData(addItems.foodItems, this.dataGridView1);
+            //    DatabaseOperations.addSingleData(addItems.foodItems);
+            //    await postDataToServerAsync(addItems.foodItems);
+            //}
         }
 
         private void refreshButton_Click(object sender, EventArgs e)

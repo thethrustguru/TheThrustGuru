@@ -21,10 +21,10 @@ namespace TheThrustGuru.Interfaces
         [Post("/user/login")]
         Task<LoginResultDataModel> loginUser([Body] LoginDataModel loginDataModel);
 
-        [Post("/recipe")]
+        [Post("/recipes")]
         Task<RecipeResultDataModel> createRecipe([Header("Authorization")] string authorization, [Body] RecipeDataModel.RecipeData recipeDataModel);
 
-        [Get("/recipe")]
+        [Get("/recipes")]
         Task<RecipeDataModel> getAllRecipe([Header("Authorization")] string authorization);
     }
 }

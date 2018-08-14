@@ -10,6 +10,6 @@ namespace TheThrustGuru.DataModels
     {
         public string id { get; set; }
         public string foodItemId { get; set; }
-        public string recipeId { get; set; }
+        public string itemId { get; set; }
     }
 }

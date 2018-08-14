@@ -36,12 +36,19 @@
             this.exitButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.buttonsPanel = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.dashboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restuarantToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.barToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stocksToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.manageAccountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonsPanel.SuspendLayout();
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // networkLabel
@@ -122,7 +129,7 @@
             this.exitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.exitButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.exitButton.ForeColor = System.Drawing.Color.White;
-            this.exitButton.Location = new System.Drawing.Point(0, 352);
+            this.exitButton.Location = new System.Drawing.Point(0, 351);
             this.exitButton.Name = "exitButton";
             this.exitButton.Size = new System.Drawing.Size(163, 49);
             this.exitButton.TabIndex = 0;
@@ -146,14 +153,6 @@
             this.label2.Size = new System.Drawing.Size(165, 1);
             this.label2.TabIndex = 2;
             // 
-            // label5
-            // 
-            this.label5.BackColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(0, 347);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(165, 1);
-            this.label5.TabIndex = 2;
-            // 
             // label4
             // 
             this.label4.BackColor = System.Drawing.Color.White;
@@ -165,7 +164,7 @@
             // label3
             // 
             this.label3.BackColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(-3, 403);
+            this.label3.Location = new System.Drawing.Point(-2, 400);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(168, 1);
             this.label3.TabIndex = 2;
@@ -184,9 +183,9 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonsPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
             this.buttonsPanel.Controls.Add(this.label6);
+            this.buttonsPanel.Controls.Add(this.label7);
             this.buttonsPanel.Controls.Add(this.label3);
             this.buttonsPanel.Controls.Add(this.label4);
-            this.buttonsPanel.Controls.Add(this.label5);
             this.buttonsPanel.Controls.Add(this.label2);
             this.buttonsPanel.Controls.Add(this.label1);
             this.buttonsPanel.Controls.Add(this.exitButton);
@@ -194,10 +193,67 @@
             this.buttonsPanel.Controls.Add(this.transactionButton);
             this.buttonsPanel.Controls.Add(this.foodItemsButton);
             this.buttonsPanel.Controls.Add(this.homeButton);
-            this.buttonsPanel.Location = new System.Drawing.Point(2, 1);
+            this.buttonsPanel.Location = new System.Drawing.Point(2, 27);
             this.buttonsPanel.Name = "buttonsPanel";
-            this.buttonsPanel.Size = new System.Drawing.Size(165, 602);
+            this.buttonsPanel.Size = new System.Drawing.Size(165, 576);
             this.buttonsPanel.TabIndex = 1;
+            this.buttonsPanel.Visible = false;
+            // 
+            // label7
+            // 
+            this.label7.BackColor = System.Drawing.Color.White;
+            this.label7.Location = new System.Drawing.Point(-4, 347);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(168, 1);
+            this.label7.TabIndex = 2;
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dashboardToolStripMenuItem,
+            this.restuarantToolStripMenuItem,
+            this.barToolStripMenuItem,
+            this.stocksToolStripMenuItem1,
+            this.manageAccountToolStripMenuItem});
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(1152, 24);
+            this.menuStrip.TabIndex = 5;
+            this.menuStrip.Text = "menuStrip1";
+            // 
+            // dashboardToolStripMenuItem
+            // 
+            this.dashboardToolStripMenuItem.Name = "dashboardToolStripMenuItem";
+            this.dashboardToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
+            this.dashboardToolStripMenuItem.Text = "Dashboard";
+            this.dashboardToolStripMenuItem.Click += new System.EventHandler(this.restuarantToolStripMenuItem_Click);
+            // 
+            // restuarantToolStripMenuItem
+            // 
+            this.restuarantToolStripMenuItem.Name = "restuarantToolStripMenuItem";
+            this.restuarantToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
+            this.restuarantToolStripMenuItem.Text = "Restuarant";
+            this.restuarantToolStripMenuItem.Click += new System.EventHandler(this.restuarantToolStripMenuItem_Click_1);
+            // 
+            // barToolStripMenuItem
+            // 
+            this.barToolStripMenuItem.Name = "barToolStripMenuItem";
+            this.barToolStripMenuItem.Size = new System.Drawing.Size(36, 20);
+            this.barToolStripMenuItem.Text = "Bar";
+            // 
+            // stocksToolStripMenuItem1
+            // 
+            this.stocksToolStripMenuItem1.Name = "stocksToolStripMenuItem1";
+            this.stocksToolStripMenuItem1.Size = new System.Drawing.Size(53, 20);
+            this.stocksToolStripMenuItem1.Text = "Stocks";
+            this.stocksToolStripMenuItem1.Click += new System.EventHandler(this.stocksToolStripMenuItem1_Click);
+            // 
+            // manageAccountToolStripMenuItem
+            // 
+            this.manageAccountToolStripMenuItem.Name = "manageAccountToolStripMenuItem";
+            this.manageAccountToolStripMenuItem.Size = new System.Drawing.Size(110, 20);
+            this.manageAccountToolStripMenuItem.Text = "Manage Account";
+            this.manageAccountToolStripMenuItem.Click += new System.EventHandler(this.manageAccountToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -207,13 +263,17 @@
             this.ClientSize = new System.Drawing.Size(1152, 612);
             this.Controls.Add(this.networkLabel);
             this.Controls.Add(this.buttonsPanel);
+            this.Controls.Add(this.menuStrip);
             this.IsMdiContainer = true;
+            this.MainMenuStrip = this.menuStrip;
             this.Name = "MainForm";
             this.ShowIcon = false;
             this.Text = "The Thrust Guru";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.buttonsPanel.ResumeLayout(false);
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,11 +288,17 @@
         private System.Windows.Forms.Button exitButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Panel buttonsPanel;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.MenuStrip menuStrip;
+        private System.Windows.Forms.ToolStripMenuItem dashboardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem restuarantToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem barToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stocksToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem manageAccountToolStripMenuItem;
     }
 }
 

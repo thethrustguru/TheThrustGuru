@@ -60,5 +60,21 @@ namespace TheThrustGuru.Logics
         {
             dataGridView.Rows.Clear();
         }
+
+        public void addItemsToDataGrid(IEnumerable<ItemsDataModel> itemModel, DataGridView datagridView)
+        {
+            decimal total_price = 0;
+            foreach(var items in itemModel)
+            {
+                total_price = items.itemSellingPrice * items.itemQuantity;
+                datagridView.Rows.Add((datagridView.RowCount + 1).ToString(), items.itemName, items.itemCostPrice, items.itemSellingPrice, items.itemQuantity,total_price, items.itemCategory, items.dateCreated);
+            }
+            
+        }
+        public void addItemsToDataGrid(ItemsDataModel items, DataGridView datagridView)
+        {
+            decimal total_price = items.itemSellingPrice * items.itemQuantity;
+            datagridView.Rows.Add((datagridView.RowCount + 1).ToString(), items.itemName, items.itemCostPrice, items.itemSellingPrice, items.itemQuantity, total_price, items.itemCategory, items.dateCreated);
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace TheThrustGuru.Database
                         FoodItemCollection.EnsureIndex(x => x._id, true);
                         FoodItemCollection.Insert(item);
                     }
-                }catch(Exception ex)
+                }catch(LiteException ex)
                 {
                     //show a messagebox with error message
                     MessageBox.Show(ex.Message,"Error");
@@ -64,12 +64,21 @@ namespace TheThrustGuru.Database
         {           
             using(var db = new LiteDatabase(Constants.DB_NAME))
             {
-                var FoodItem = db.GetCollection<FoodItemsDataModel.FoodItemModel>(Constants.FOOD_ITEM_TABLE_NAME);
+                try
+                {
+                    var FoodItem = db.GetCollection<FoodItemsDataModel.FoodItemModel>(Constants.FOOD_ITEM_TABLE_NAME);
 
-                //liteDB query to get 100 records in FoodItems Table and sort in ascending order using 'name' 
-                var data = FoodItem.Find(Query.All("name", Query.Ascending), limit: 100);
+                    //liteDB query to get 100 records in FoodItems Table and sort in ascending order using 'name' 
+                    var data = FoodItem.Find(Query.All("name", Query.Ascending), limit: 100);
 
-                return data;             
+                    return data;
+
+                }catch(LiteException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return null;
+                }
+                             
             }                      
         }
 
@@ -77,25 +86,60 @@ namespace TheThrustGuru.Database
         {
             using(var db = new LiteDatabase(@Constants.DB_NAME))
             {
-                var RecipeCollection = db.GetCollection<RecipeDataModel>(Constants.RECIPE_TABLE_NAME);
+                var RecipeCollection = db.GetCollection<RecipeDataModel.RecipeData>(Constants.RECIPE_TABLE_NAME);
                 var FoodItemInRecipeCollection = db.GetCollection<FoodItemsInRecipe>(Constants.FOOD_ITEM_IN_RECIPE_TABLE_NAME);
-                
-                //try
-                //{                   
-                //    //get total count of collection incremet and set as recipe id
-                //    //recipe.id = (RecipeCollection.Count() + 1).ToString();
-                //    RecipeCollection.EnsureIndex(x => x.id, true);
-                //    RecipeCollection.Insert(recipe);
-                //foreach (var data in recipe.foodItems)
-                //{
-                //    FoodItemInRecipeCollection.Insert(new FoodItemsInRecipe {id = (FoodItemInRecipeCollection.Count() + 1).ToString(),
-                //        foodItemId = data._id, recipeId = recipe.id });
-                //}
+                var RecipeItemsDataCollection = db.GetCollection<RecipeDataModel.RecipeData.items>(Constants.RECIPE_ITEMS_DATA);
 
-                //}catch(Exception ex)
-                //{
-                //    MessageBox.Show(ex.Message, "Error");
-                //}
+                try
+                {
+                    RecipeCollection.EnsureIndex(x => x.id, true);
+                    RecipeCollection.Insert(recipe);
+                    foreach(var data in recipe.itemsData)
+                    {
+                        data.id = recipe.id;
+                        RecipeItemsDataCollection.EnsureIndex(x => x.id);
+                        RecipeItemsDataCollection.Insert(data);
+                        FoodItemInRecipeCollection.Insert(new FoodItemsInRecipe { id = (FoodItemInRecipeCollection.Count() + 1).ToString(), itemId = data.id, foodItemId = data.foodItems._id });
+
+                    }
+                }catch(LiteException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error");
+                }                               
+            }
+        }
+
+        public static void addRecipe(RecipeDataModel recipeDataModel)
+        {
+            using(var db = new LiteDatabase(@Constants.DB_NAME))
+            {
+                var RecipeCollection = db.GetCollection<RecipeDataModel.RecipeData>(Constants.RECIPE_TABLE_NAME);
+                var FoodItemInRecipeCollection = db.GetCollection<FoodItemsInRecipe>(Constants.FOOD_ITEM_IN_RECIPE_TABLE_NAME);
+                var RecipeItemsDataCollection = db.GetCollection<RecipeDataModel.RecipeData.items>(Constants.RECIPE_ITEMS_DATA);
+
+                try
+                {
+                    foreach (var recipe in recipeDataModel.results)
+                    {
+
+                        RecipeCollection.EnsureIndex(x => x.id, true);
+                        RecipeCollection.Insert(recipe);
+                        if (recipe.itemsData != null && recipe.itemsData.Any())
+                            foreach (var data in recipe.itemsData)
+                            {
+                                data.recipeId = recipe.id;
+                                RecipeItemsDataCollection.EnsureIndex(x => x.id);
+                                RecipeItemsDataCollection.Insert(data);
+                                if (data.foodItems != null)
+                                    FoodItemInRecipeCollection.Insert(new FoodItemsInRecipe { id = (FoodItemInRecipeCollection.Count() + 1).ToString(), itemId = data.id, foodItemId = data.foodItems._id });
+
+                            }
+                    }
+                }
+                catch (LiteException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error");
+                }            
             }
         }
 
@@ -103,18 +147,72 @@ namespace TheThrustGuru.Database
         {
             using(var db = new LiteDatabase(Constants.DB_NAME))
             {
+                var RecipeCollection = db.GetCollection<RecipeDataModel.RecipeData>(Constants.RECIPE_TABLE_NAME);
+                var FoodItemInRecipeCollection = db.GetCollection<FoodItemsInRecipe>(Constants.FOOD_ITEM_IN_RECIPE_TABLE_NAME);
+                var RecipeItemsDataCollection = db.GetCollection<RecipeDataModel.RecipeData.items>(Constants.RECIPE_ITEMS_DATA);
+                var FoodItemCollection = db.GetCollection<FoodItemsDataModel.FoodItemModel>(Constants.FOOD_ITEM_TABLE_NAME);
+
+
+                var recipeData = RecipeCollection.Find(Query.All("recipeName", Query.Ascending), limit: 100);
+                if (recipeData == null || !recipeData.Any())
+                    return null;
+                foreach (var recipe in recipeData)
+                {
+                    var recipeItems = RecipeItemsDataCollection.Find(Query.EQ("recipeId", recipe.id));
+                    if (recipeItems == null || !recipeItems.Any())
+                        return null;
+                    for (int j = 0; j < recipeItems.Count(); j++)
+                    {
+                        var data = FoodItemInRecipeCollection.FindOne(Query.EQ("itemId", recipeItems.ElementAt(j).id));
+                        if (data == null)
+                            continue;
+                        var food = FoodItemCollection.FindOne(Query.EQ("_id", data.foodItemId));
+                        if (food == null)
+                            continue;
+                        recipeItems.ElementAt(j).foodItems = food;
+                    }
+                    recipe.itemsData = recipeItems.ToList();
+                }
+                return recipeData;
+
+
+                //try
+                //{
+                //    var recipeData = RecipeCollection.Find(Query.All("recipeName", Query.Ascending), limit: 100);
+                //    if (recipeData == null || !recipeData.Any())
+                //        return null;
+                //    foreach(var recipe in recipeData)
+                //    {
+                //        var recipeItems = RecipeItemsDataCollection.Find(Query.EQ("recipeId", recipe.id));
+                //        if (recipeItems == null || !recipeItems.Any())
+                //            return null;
+                //        for (int j = 0; j <= recipeItems.Count(); j++)
+                //        {
+                //            var data = FoodItemInRecipeCollection.FindOne(Query.EQ("itemId", recipeItems.ElementAt(j).id));
+                //            if (data == null)
+                //                continue;
+                //            var food = FoodItemCollection.FindOne(Query.EQ("_id", data.foodItemId));
+                //            if (food == null)
+                //                continue;
+                //            recipeItems.ElementAt(j).foodItems = food;
+                //        }
+                //        recipe.itemsData = recipeItems.ToList();
+                //    }
+                //    return recipeData;
+                //}catch(Exception ex)
+                //{
+                //    MessageBox.Show(ex.Message);
+                //    return null;
+                //}
+            }
+        }
+
+        public static void deleteRecipe(string id)
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
                 var RecipeCollection = db.GetCollection<RecipeDataModel>(Constants.RECIPE_TABLE_NAME);
                 var FoodItemInRecipeCollection = db.GetCollection<FoodItemsInRecipe>(Constants.FOOD_ITEM_IN_RECIPE_TABLE_NAME);
-                try
-                {
-                    var recipeData = RecipeCollection.Find(Query.All("recipeName", Query.Ascending), limit: 100);
-                    var recipeFoodItems = FoodItemInRecipeCollection.Find(Query.All(), limit: 100);
-
-                   return null;
-                }catch(Exception ex)
-                {
-                    return null;
-                }
             }
         }
 
@@ -141,7 +239,7 @@ namespace TheThrustGuru.Database
                     
                     
                 }
-                catch(Exception ex)
+                catch(LiteException ex)
                 {
                     MessageBox.Show(ex.Message, "Error");
                 }
@@ -158,9 +256,78 @@ namespace TheThrustGuru.Database
                     return tokenCollection.FindById(tokenCollection.Count());
 
                 }
-                catch(Exception ex)
+                catch(LiteException ex)
                 {
                     MessageBox.Show(ex.Message, "Error");
+                    return null;
+                }
+            }
+        }
+
+        public static void saveItems(ItemsDataModel items)
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var itemCollection = db.GetCollection<ItemsDataModel>(Constants.ITEM_TABLE_NAME);
+                int count = itemCollection.Count();
+
+                try
+                {
+                    items.id = (count + 1).ToString();
+                    itemCollection.EnsureIndex(x => x.id, true);
+                    itemCollection.Insert(items);
+                }catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        public static IEnumerable<ItemsDataModel> getItems()
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var itemCollection = db.GetCollection<ItemsDataModel>(Constants.ITEM_TABLE_NAME);
+                try
+                {
+                    return itemCollection.Find(Query.All("itemName", Query.Ascending), limit: 100);
+                }catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return null;
+                }
+            }
+        }
+
+        public static void AddFood(FoodsDataModel foods)
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var foodsCollection = db.GetCollection<FoodsDataModel>(Constants.FOODS_TABLE_NAME);
+                try
+                {
+                    int index = foodsCollection.Count() + 1;
+                    foods.id = index.ToString();
+                    foodsCollection.EnsureIndex(x => x.id, true);
+                    foodsCollection.Insert(foods);
+                }catch(LiteException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        public static IEnumerable<FoodsDataModel> getFoods()
+        {
+            using (var db = new LiteDatabase(@Constants.DB_NAME))
+            {
+                var foodsCollection = db.GetCollection<FoodsDataModel>(Constants.FOODS_TABLE_NAME);
+                try
+                {
+                    return foodsCollection.Find(Query.All("name", Query.Ascending));
+                }catch(LiteException ex)
+                {
+                    MessageBox.Show(ex.Message);
                     return null;
                 }
             }

@@ -19,7 +19,7 @@ namespace TheThrustGuru
 
         private FoodItems foodItems = new FoodItems();
         private Recipes recipes = new Recipes();
-        private Home home  = new Home();
+        private Foods home  = new Foods();
       
         public MainForm()
         {
@@ -50,9 +50,9 @@ namespace TheThrustGuru
         private void MainForm_Load(object sender, EventArgs e)
         {
             //home = new Home();         
-            this.homeButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            home.MdiParent = this;
-            home.Show();                     
+            //this.homeButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            //home.MdiParent = this;
+            //home.Show();                     
 
 
         }
@@ -155,11 +155,31 @@ namespace TheThrustGuru
             {
                 this.homeButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
                 changeColorPanel(this.buttonsPanel, this.homeButton);
-                home = new Home();
+                home = new Foods();
                 home.MdiParent = this;
                 home.Show();
                 DisposeAllButThis(home);
             }
+        }
+
+        private void restuarantToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void stocksToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            new Stocks().ShowDialog();
+        }
+
+        private void restuarantToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            buttonsPanel.Visible = true;
+        }
+
+        private void manageAccountToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ManageAccountForm().ShowDialog();
         }
     }
 }

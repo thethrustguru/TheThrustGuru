@@ -15,5 +15,8 @@ namespace TheThrustGuru.Utils
         public static string TOKEN_TABLE_NAME = "TOKEN_TABLE_NAME";
         public static string INTERNET_CONNECTION_ERROR = "Internet Connection Error";
         public static string INTERNET_CONNECTION_ERR_MSG = "There seems to be no internet connection or your internet connection is bad. Please troubleshoot your connection and try again later.";
+        public static string RECIPE_ITEMS_DATA = "RECIPE_ITEMS_DATA";
+        public static string ITEM_TABLE_NAME = "ITEM_TABLE_NAME";
+        public static string FOODS_TABLE_NAME = "FOODS_TABLE_NAME";
     }
 }

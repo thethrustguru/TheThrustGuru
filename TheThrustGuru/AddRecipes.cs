@@ -21,8 +21,9 @@ namespace TheThrustGuru
         private string name = "Recipe name";
         private string desc = "Description";
         private string price = "Price";
+        private bool isEdit = false;
         private IEnumerable<FoodItemsDataModel.FoodItemModel> data;
-        private List<FoodItemsDataModel.FoodItemModel> newdata = new List<FoodItemsDataModel.FoodItemModel>();
+        private List<RecipeDataModel.RecipeData.items> recipeFoodItems = new List<RecipeDataModel.RecipeData.items>();
         public List<RecipeDataModel.RecipeData> recipeDataList = new List<RecipeDataModel.RecipeData>();
 
         public AddRecipes()
@@ -32,6 +33,17 @@ namespace TheThrustGuru
             waterMarkOnTextBoxLeave(this.nameTextBox, name);
             waterMarkOnTextBoxLeave(this.descTextBox, desc);
             waterMarkOnTextBoxLeave(this.priceTextBox, price);
+        }
+
+        public AddRecipes(RecipeDataModel.RecipeData recipe)
+        {
+            InitializeComponent();
+
+            this.nameTextBox.Text = recipe.recipeName;
+            this.descTextBox.Text = recipe.recipeDesc;
+            this.okButton.Text = "Edit";
+            isEdit = true;
+
         }
 
         private void waterMarkOnTextBoxLeave(TextBox textbox, string placeHolder)
@@ -123,8 +135,8 @@ namespace TheThrustGuru
         {
                         
             RecipeDataModel.RecipeData recipeData = new RecipeDataModel.RecipeData();
-            recipeData.recipeName = this.nameTextBox.Text;            
-            recipeData.foodItems = newdata;
+            recipeData.recipeName = this.nameTextBox.Text;
+            recipeData.itemsData = recipeFoodItems;
             string nDesc = this.descTextBox.Text;
             if (string.IsNullOrWhiteSpace(nDesc))
                 nDesc = " ";
@@ -151,6 +163,8 @@ namespace TheThrustGuru
                     recipeData.id = recipeResult.id;
                     recipeDataList.Add(recipeData);
                     DatabaseOperations.addRecipe(recipeData);
+                    MessageBox.Show("Recipe Created successfully");
+                    clearControls();
 
                     //TODO clear data in controls for user to create new recipe
                 }
@@ -213,12 +227,35 @@ namespace TheThrustGuru
             quantity = quantity, totalPrice = totalPrice},this.itemsDataGridView);
 
             //add the item to new list of foods
-            newdata.Add(item);
+            RecipeDataModel.RecipeData.items R_items = new RecipeDataModel.RecipeData.items();
+            R_items.quantity = quantity;
+            R_items.foodItems = item;
+            recipeFoodItems.Add(R_items);
+        }
+
+        private void clearControls()
+        {
+            this.nameTextBox.Clear();
+            this.descTextBox.Clear();
+            new UpdateDataGridView().clearDataInDataGridView(this.itemsDataGridView);
+            this.quantityTextBox.Clear();
+            this.priceTextBox.Clear();
+
+            waterMarkOnTextBoxLeave(this.nameTextBox, name);
+            waterMarkOnTextBoxLeave(this.descTextBox, desc);
+            waterMarkOnTextBoxLeave(this.priceTextBox, price);
+
         }
 
         private void okButton_Click(object sender, EventArgs e)
         {
             validateData();            
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
     }
 }

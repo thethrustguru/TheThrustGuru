@@ -34,13 +34,13 @@ namespace TheThrustGuru
             this.label2 = new System.Windows.Forms.Label();
             this.searchButton = new System.Windows.Forms.Button();
             this.searchTextBox = new System.Windows.Forms.TextBox();
-            this.addFoodButton = new System.Windows.Forms.Button();
             this.refreshButton = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.serialNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.price = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sellingPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.count = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.category = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.created = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -60,9 +60,9 @@ namespace TheThrustGuru
             // label2
             // 
             this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.label2.Location = new System.Drawing.Point(34, 57);
+            this.label2.Location = new System.Drawing.Point(34, 54);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(745, 2);
+            this.label2.Size = new System.Drawing.Size(846, 2);
             this.label2.TabIndex = 1;
             // 
             // searchButton
@@ -70,7 +70,7 @@ namespace TheThrustGuru
             this.searchButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
             this.searchButton.FlatAppearance.BorderSize = 0;
             this.searchButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.searchButton.Location = new System.Drawing.Point(312, 82);
+            this.searchButton.Location = new System.Drawing.Point(276, 82);
             this.searchButton.Name = "searchButton";
             this.searchButton.Size = new System.Drawing.Size(75, 23);
             this.searchButton.TabIndex = 2;
@@ -82,24 +82,10 @@ namespace TheThrustGuru
             this.searchTextBox.ForeColor = System.Drawing.SystemColors.WindowText;
             this.searchTextBox.Location = new System.Drawing.Point(37, 84);
             this.searchTextBox.Name = "searchTextBox";
-            this.searchTextBox.Size = new System.Drawing.Size(258, 20);
+            this.searchTextBox.Size = new System.Drawing.Size(226, 20);
             this.searchTextBox.TabIndex = 66;
             this.searchTextBox.Enter += new System.EventHandler(this.searchTextBox_Enter);
             this.searchTextBox.Leave += new System.EventHandler(this.searchTextBox_Leave);
-            // 
-            // addFoodButton
-            // 
-            this.addFoodButton.AutoSize = true;
-            this.addFoodButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
-            this.addFoodButton.FlatAppearance.BorderSize = 0;
-            this.addFoodButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.addFoodButton.Location = new System.Drawing.Point(509, 69);
-            this.addFoodButton.Name = "addFoodButton";
-            this.addFoodButton.Size = new System.Drawing.Size(126, 48);
-            this.addFoodButton.TabIndex = 3;
-            this.addFoodButton.Text = "&Add Food Item";
-            this.addFoodButton.UseVisualStyleBackColor = false;
-            this.addFoodButton.Click += new System.EventHandler(this.addFoodButton_Click);
             // 
             // refreshButton
             // 
@@ -108,7 +94,7 @@ namespace TheThrustGuru
             this.refreshButton.CausesValidation = false;
             this.refreshButton.FlatAppearance.BorderSize = 0;
             this.refreshButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.refreshButton.Location = new System.Drawing.Point(653, 70);
+            this.refreshButton.Location = new System.Drawing.Point(754, 69);
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.Size = new System.Drawing.Size(126, 48);
             this.refreshButton.TabIndex = 4;
@@ -127,6 +113,7 @@ namespace TheThrustGuru
             this.serialNo,
             this.name,
             this.price,
+            this.sellingPriceColumn,
             this.count,
             this.category,
             this.created,
@@ -136,13 +123,13 @@ namespace TheThrustGuru
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(744, 479);
+            this.dataGridView1.Size = new System.Drawing.Size(845, 479);
             this.dataGridView1.TabIndex = 5;
             // 
             // progressBar
             // 
             this.progressBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.progressBar.Location = new System.Drawing.Point(653, 625);
+            this.progressBar.Location = new System.Drawing.Point(368, 82);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(126, 23);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
@@ -168,10 +155,16 @@ namespace TheThrustGuru
             // 
             // price
             // 
-            this.price.HeaderText = "Price";
+            this.price.HeaderText = "Cost Price";
             this.price.Name = "price";
             this.price.ReadOnly = true;
             this.price.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // sellingPriceColumn
+            // 
+            this.sellingPriceColumn.HeaderText = "Selling Price";
+            this.sellingPriceColumn.Name = "sellingPriceColumn";
+            this.sellingPriceColumn.ReadOnly = true;
             // 
             // count
             // 
@@ -211,7 +204,6 @@ namespace TheThrustGuru
             this.Controls.Add(this.searchTextBox);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.refreshButton);
-            this.Controls.Add(this.addFoodButton);
             this.Controls.Add(this.searchButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -232,7 +224,6 @@ namespace TheThrustGuru
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button searchButton;        
-        private Button addFoodButton;
         private Button refreshButton;
         private DataGridView dataGridView1;
         private System.Windows.Forms.TextBox searchTextBox;
@@ -240,6 +231,7 @@ namespace TheThrustGuru
         private DataGridViewTextBoxColumn serialNo;
         private DataGridViewTextBoxColumn name;
         private DataGridViewTextBoxColumn price;
+        private DataGridViewTextBoxColumn sellingPriceColumn;
         private DataGridViewTextBoxColumn count;
         private DataGridViewTextBoxColumn category;
         private DataGridViewTextBoxColumn created;

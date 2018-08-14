@@ -22,12 +22,22 @@ namespace TheThrustGuru.DataModels
             public string recipeName { get; set; }
             [JsonProperty(PropertyName = "desc")]
             public string recipeDesc { get; set; }
-            [JsonProperty(PropertyName = "unit")]
-            public string unit { get; set; }
-            [JsonProperty(PropertyName = "quantity")]
-            public int quantity { get; set; }
             [JsonProperty(PropertyName = "items")]
-            public List<FoodItemsDataModel.FoodItemModel> foodItems { get; set; }          
+            public List<items> itemsData { get; set; }
+
+            public class items
+            {
+               
+                [JsonProperty(PropertyName = "_id")]
+                public string id { get; set; }
+                [JsonProperty(PropertyName = "unit")]
+                public string unit { get; set; }
+                [JsonProperty(PropertyName = "quantity")]
+                public int quantity { get; set; }
+                [JsonProperty(PropertyName = "itemId")]
+                public FoodItemsDataModel.FoodItemModel foodItems { get; set; }
+                public string recipeId { get; set; }
+            }     
 
         }
     }

@@ -25,6 +25,9 @@ namespace TheThrustGuru.DataModels
             [JsonProperty(PropertyName = "price")]
             public decimal price { get; set; }
 
+            [JsonProperty(PropertyName = "selling_price")]
+            public decimal sellingPrice { get; set; }
+
             [JsonProperty(PropertyName = "total_price")]
             public decimal total_price { get; set; }
 

@@ -33,9 +33,12 @@
             this.recipesTextBox = new System.Windows.Forms.Label();
             this.searchRTextBox = new System.Windows.Forms.TextBox();
             this.AddRButton = new System.Windows.Forms.Button();
-            this.ExportRButton = new System.Windows.Forms.Button();
+            this.refreshButton = new System.Windows.Forms.Button();
             this.searchRButton = new System.Windows.Forms.Button();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RecipeFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.cartDataGridView = new System.Windows.Forms.DataGridView();
             this.seriaNoColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -44,12 +47,11 @@
             this.button1 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.label3 = new System.Windows.Forms.Label();
+            this.contextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cartDataGridView)).BeginInit();
             this.panel1.SuspendLayout();
-            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -91,17 +93,18 @@
             this.AddRButton.UseVisualStyleBackColor = false;
             this.AddRButton.Click += new System.EventHandler(this.AddRButton_Click);
             // 
-            // ExportRButton
+            // refreshButton
             // 
-            this.ExportRButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
-            this.ExportRButton.FlatAppearance.BorderSize = 0;
-            this.ExportRButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ExportRButton.Location = new System.Drawing.Point(725, 70);
-            this.ExportRButton.Name = "ExportRButton";
-            this.ExportRButton.Size = new System.Drawing.Size(126, 48);
-            this.ExportRButton.TabIndex = 4;
-            this.ExportRButton.Text = "&Export Data";
-            this.ExportRButton.UseVisualStyleBackColor = false;
+            this.refreshButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
+            this.refreshButton.FlatAppearance.BorderSize = 0;
+            this.refreshButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.refreshButton.Location = new System.Drawing.Point(725, 70);
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.Size = new System.Drawing.Size(126, 48);
+            this.refreshButton.TabIndex = 4;
+            this.refreshButton.Text = "&Refresh Data";
+            this.refreshButton.UseVisualStyleBackColor = false;
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
             // 
             // searchRButton
             // 
@@ -116,15 +119,36 @@
             this.searchRButton.Text = "&Search";
             this.searchRButton.UseVisualStyleBackColor = false;
             // 
-            // flowLayoutPanel1
+            // contextMenuStrip
             // 
-            this.flowLayoutPanel1.AutoScroll = true;
-            this.flowLayoutPanel1.BackColor = System.Drawing.Color.White;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(35, 132);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(10);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(528, 490);
-            this.flowLayoutPanel1.TabIndex = 67;
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editToolStripMenuItem,
+            this.deleteToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(135, 48);
+            this.contextMenuStrip.Text = "Edit";
+            // 
+            // editToolStripMenuItem
+            // 
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.editToolStripMenuItem.Text = "Edit item";
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.deleteToolStripMenuItem.Text = "Delete item";
+            // 
+            // RecipeFlowLayoutPanel
+            // 
+            this.RecipeFlowLayoutPanel.AutoScroll = true;
+            this.RecipeFlowLayoutPanel.BackColor = System.Drawing.Color.White;
+            this.RecipeFlowLayoutPanel.Location = new System.Drawing.Point(35, 132);
+            this.RecipeFlowLayoutPanel.Name = "RecipeFlowLayoutPanel";
+            this.RecipeFlowLayoutPanel.Padding = new System.Windows.Forms.Padding(10);
+            this.RecipeFlowLayoutPanel.Size = new System.Drawing.Size(528, 490);
+            this.RecipeFlowLayoutPanel.TabIndex = 67;
             // 
             // cartDataGridView
             // 
@@ -196,15 +220,15 @@
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 82);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(70, 13);
+            this.label2.Location = new System.Drawing.Point(5, 85);
+            this.label2.Size = new System.Drawing.Size(89, 13);
+            this.label2.Name = "label2";            
             this.label2.TabIndex = 1;
             this.label2.Text = "Egusi Recipe";
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Location = new System.Drawing.Point(832, 219);
@@ -213,26 +237,23 @@
             this.panel1.TabIndex = 69;
             this.panel1.Visible = false;
             // 
-            // contextMenuStrip
+            // progressBar
             // 
-            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.editToolStripMenuItem,
-            this.deleteToolStripMenuItem});
-            this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(135, 48);
-            this.contextMenuStrip.Text = "Edit";
+            this.progressBar.Location = new System.Drawing.Point(437, 82);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(126, 23);
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBar.TabIndex = 70;
+            this.progressBar.Visible = false;
             // 
-            // editToolStripMenuItem
+            // label3
             // 
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-            this.editToolStripMenuItem.Text = "Edit item";
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-            this.deleteToolStripMenuItem.Text = "Delete item";
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(99, 84);
+            this.label3.Size = new System.Drawing.Size(53, 13);
+            this.label3.Name = "label3";           
+            this.label3.TabIndex = 1;
+            this.label3.Text = "200.458";
             // 
             // Recipes
             // 
@@ -240,11 +261,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Lavender;
             this.ClientSize = new System.Drawing.Size(1000, 651);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.cartDataGridView);
-            this.Controls.Add(this.flowLayoutPanel1);
+            this.Controls.Add(this.RecipeFlowLayoutPanel);
             this.Controls.Add(this.clearButton);
-            this.Controls.Add(this.ExportRButton);
+            this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.confirmButton);
             this.Controls.Add(this.searchRButton);
             this.Controls.Add(this.AddRButton);
@@ -259,10 +281,9 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Recipes";
             this.Load += new System.EventHandler(this.Recipes_Load);
+            this.contextMenuStrip.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cartDataGridView)).EndInit();
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -274,9 +295,9 @@
         private System.Windows.Forms.Label recipesTextBox;
         private System.Windows.Forms.TextBox searchRTextBox;
         private System.Windows.Forms.Button AddRButton;
-        private System.Windows.Forms.Button ExportRButton;
+        private System.Windows.Forms.Button refreshButton;
         private System.Windows.Forms.Button searchRButton;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel RecipeFlowLayoutPanel;
         private System.Windows.Forms.DataGridView cartDataGridView;
         private System.Windows.Forms.Button confirmButton;
         private System.Windows.Forms.Button clearButton;
@@ -288,5 +309,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Label label3;
     }
 }

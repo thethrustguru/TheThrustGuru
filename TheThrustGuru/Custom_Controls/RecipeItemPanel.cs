@@ -53,6 +53,45 @@ namespace TheThrustGuru.Custom_Controls
 
         }
 
+        public RecipeItemPanel(string itemName, string id, string itemPrice, Button button)
+        {
+            //this.button = button;             
+
+            button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
+            button.FlatAppearance.BorderSize = 0;
+            button.FlatStyle = FlatStyle.Flat;
+            button.Location = new System.Drawing.Point(3, 3);
+            button.Name = itemName;
+            button.Tag = id;
+            button.Size = new System.Drawing.Size(150, 76);
+            button.UseVisualStyleBackColor = false;
+            // 
+            // recipeNameLabel
+            // 
+            this.recipeNameLabel.Location = new System.Drawing.Point(5, 85);
+            this.recipeNameLabel.Size = new System.Drawing.Size(89, 13);
+            this.recipeNameLabel.Name = "recipeNameLabel" + id;           
+            this.recipeNameLabel.Text = itemName;
+            this.recipeNameLabel.AutoSize = true;
+            // 
+            // recipePriceLabel
+            // 
+            this.recipePriceLabel.Location = new System.Drawing.Point(99, 84);
+            this.recipePriceLabel.Size = new System.Drawing.Size(53, 13);
+            this.recipePriceLabel.Name = "recipePriceLabel" + id;            
+            this.recipePriceLabel.Text = itemPrice;
+            this.recipePriceLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+
+            this.BackColor = System.Drawing.Color.White;
+            //this.Controls.Add(this.recipePriceLabel);
+            this.Controls.Add(this.recipeNameLabel);
+            this.Controls.Add(button);
+            this.Controls.Add(this.recipePriceLabel);
+            this.Name = "recipePanel" + id;
+            this.Size = new System.Drawing.Size(156, 105);
+
+        }
+
 
     }
 }

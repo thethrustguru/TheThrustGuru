@@ -15,5 +15,7 @@ namespace TheThrustGuru.DataModels
         public string id { get; set; }
         [JsonProperty(PropertyName = "message")]
         public string message { get; set; }
+        [JsonProperty(PropertyName = "itemId")]
+        public string itemId { get; set; }
     }
 }
