@@ -33,7 +33,6 @@
             this.recipesTextBox = new System.Windows.Forms.Label();
             this.searchRTextBox = new System.Windows.Forms.TextBox();
             this.AddRButton = new System.Windows.Forms.Button();
-            this.refreshButton = new System.Windows.Forms.Button();
             this.searchRButton = new System.Windows.Forms.Button();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,14 +43,9 @@
             this.nameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.confirmButton = new System.Windows.Forms.Button();
             this.clearButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.label3 = new System.Windows.Forms.Label();
             this.contextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cartDataGridView)).BeginInit();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -92,19 +86,6 @@
             this.AddRButton.Text = "&Add Recipe";
             this.AddRButton.UseVisualStyleBackColor = false;
             this.AddRButton.Click += new System.EventHandler(this.AddRButton_Click);
-            // 
-            // refreshButton
-            // 
-            this.refreshButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
-            this.refreshButton.FlatAppearance.BorderSize = 0;
-            this.refreshButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.refreshButton.Location = new System.Drawing.Point(725, 70);
-            this.refreshButton.Name = "refreshButton";
-            this.refreshButton.Size = new System.Drawing.Size(126, 48);
-            this.refreshButton.TabIndex = 4;
-            this.refreshButton.Text = "&Refresh Data";
-            this.refreshButton.UseVisualStyleBackColor = false;
-            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
             // 
             // searchRButton
             // 
@@ -209,34 +190,6 @@
             this.clearButton.UseVisualStyleBackColor = false;
             this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(3, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(150, 76);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(5, 85);
-            this.label2.Size = new System.Drawing.Size(89, 13);
-            this.label2.Name = "label2";            
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Egusi Recipe";
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.button1);
-            this.panel1.Location = new System.Drawing.Point(832, 219);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(156, 105);
-            this.panel1.TabIndex = 69;
-            this.panel1.Visible = false;
-            // 
             // progressBar
             // 
             this.progressBar.Location = new System.Drawing.Point(437, 82);
@@ -246,15 +199,6 @@
             this.progressBar.TabIndex = 70;
             this.progressBar.Visible = false;
             // 
-            // label3
-            // 
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(99, 84);
-            this.label3.Size = new System.Drawing.Size(53, 13);
-            this.label3.Name = "label3";           
-            this.label3.TabIndex = 1;
-            this.label3.Text = "200.458";
-            // 
             // Recipes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -262,28 +206,23 @@
             this.BackColor = System.Drawing.Color.Lavender;
             this.ClientSize = new System.Drawing.Size(1000, 651);
             this.Controls.Add(this.progressBar);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.cartDataGridView);
             this.Controls.Add(this.RecipeFlowLayoutPanel);
             this.Controls.Add(this.clearButton);
-            this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.confirmButton);
             this.Controls.Add(this.searchRButton);
             this.Controls.Add(this.AddRButton);
             this.Controls.Add(this.searchRTextBox);
             this.Controls.Add(this.recipesTextBox);
             this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Location = new System.Drawing.Point(170, 0);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Recipes";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Recipes";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Load += new System.EventHandler(this.Recipes_Load);
             this.contextMenuStrip.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cartDataGridView)).EndInit();
-            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -295,7 +234,6 @@
         private System.Windows.Forms.Label recipesTextBox;
         private System.Windows.Forms.TextBox searchRTextBox;
         private System.Windows.Forms.Button AddRButton;
-        private System.Windows.Forms.Button refreshButton;
         private System.Windows.Forms.Button searchRButton;
         private System.Windows.Forms.FlowLayoutPanel RecipeFlowLayoutPanel;
         private System.Windows.Forms.DataGridView cartDataGridView;
@@ -303,13 +241,9 @@
         private System.Windows.Forms.Button clearButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn seriaNoColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn nameColumn;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.Label label3;
     }
 }

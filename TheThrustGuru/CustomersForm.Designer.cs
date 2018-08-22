@@ -1,6 +1,6 @@
 ﻿namespace TheThrustGuru
 {
-    partial class AllItemsForm
+    partial class CustomersForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,103 +28,87 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.manageItemButton = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
+            // 
+            // manageItemButton
+            // 
+            this.manageItemButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.manageItemButton.Location = new System.Drawing.Point(764, 14);
+            this.manageItemButton.Name = "manageItemButton";
+            this.manageItemButton.Size = new System.Drawing.Size(91, 47);
+            this.manageItemButton.TabIndex = 5;
+            this.manageItemButton.Text = "Manage Customers";
+            this.manageItemButton.UseVisualStyleBackColor = true;
+            this.manageItemButton.Click += new System.EventHandler(this.manageItemButton_Click);
             // 
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToOrderColumns = true;
+            this.dataGridView1.BackgroundColor = System.Drawing.Color.White;
+            this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
             this.Column2,
+            this.Column3,
             this.Column4,
             this.Column5,
-            this.Column6,
-            this.Column8,
-            this.Column3,
             this.Column7});
-            this.dataGridView1.Location = new System.Drawing.Point(12, 12);
+            this.dataGridView1.Location = new System.Drawing.Point(4, 14);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(754, 440);
-            this.dataGridView1.TabIndex = 0;
-            // 
-            // manageItemButton
-            // 
-            this.manageItemButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.manageItemButton.Location = new System.Drawing.Point(772, 12);
-            this.manageItemButton.Name = "manageItemButton";
-            this.manageItemButton.Size = new System.Drawing.Size(91, 47);
-            this.manageItemButton.TabIndex = 1;
-            this.manageItemButton.Text = "Manage Items";
-            this.manageItemButton.UseVisualStyleBackColor = true;
-            this.manageItemButton.Click += new System.EventHandler(this.button1_Click);
+            this.dataGridView1.TabIndex = 4;
             // 
             // Column1
             // 
             this.Column1.HeaderText = "S/N";
             this.Column1.Name = "Column1";
-            this.Column1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Column1.Width = 50;
             // 
             // Column2
             // 
-            this.Column2.HeaderText = "Item name";
+            this.Column2.HeaderText = "Name";
             this.Column2.Name = "Column2";
-            this.Column2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // Column4
-            // 
-            this.Column4.HeaderText = "Cost Price";
-            this.Column4.Name = "Column4";
-            this.Column4.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // Column5
-            // 
-            this.Column5.HeaderText = "Selling Price";
-            this.Column5.Name = "Column5";
-            this.Column5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // Column6
-            // 
-            this.Column6.HeaderText = "Quantity Remaining";
-            this.Column6.Name = "Column6";
-            this.Column6.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // Column8
-            // 
-            this.Column8.HeaderText = "Total Price";
-            this.Column8.Name = "Column8";
-            this.Column8.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Column2.Width = 180;
             // 
             // Column3
             // 
-            this.Column3.HeaderText = "Category";
+            this.Column3.HeaderText = "Contact Phone";
             this.Column3.Name = "Column3";
-            this.Column3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Column3.Width = 120;
+            // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "Voucher code";
+            this.Column4.Name = "Column4";
+            this.Column4.Width = 120;
+            // 
+            // Column5
+            // 
+            this.Column5.HeaderText = "Address";
+            this.Column5.Name = "Column5";
             // 
             // Column7
             // 
-            this.Column7.HeaderText = "Date Created";
+            this.Column7.HeaderText = "Other";
             this.Column7.Name = "Column7";
-            this.Column7.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Column7.Width = 175;
             // 
-            // AllItemsForm
+            // CustomersForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -134,12 +118,11 @@
             this.Controls.Add(this.dataGridView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Location = new System.Drawing.Point(170, 5);
-            this.Name = "AllItemsForm";
+            this.Name = "CustomersForm";
+            this.RightToLeftLayout = true;
             this.ShowIcon = false;
-            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "AllItemsForm";
-            this.Load += new System.EventHandler(this.AllItemsForm_Load);
+            this.Load += new System.EventHandler(this.CustomersForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
@@ -147,15 +130,13 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button manageItemButton;
+        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
     }
 }

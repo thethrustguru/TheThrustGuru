@@ -30,11 +30,13 @@
         {
             this.buttonsPanel = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.salesButton = new System.Windows.Forms.Button();
-            this.purchaseButton = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.setUpStockbutton = new System.Windows.Forms.Button();
             this.allItemsButton = new System.Windows.Forms.Button();
             this.buttonsPanel.SuspendLayout();
             this.SuspendLayout();
@@ -43,11 +45,13 @@
             // 
             this.buttonsPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
             this.buttonsPanel.Controls.Add(this.label4);
-            this.buttonsPanel.Controls.Add(this.label1);
             this.buttonsPanel.Controls.Add(this.label5);
+            this.buttonsPanel.Controls.Add(this.label1);
+            this.buttonsPanel.Controls.Add(this.label3);
             this.buttonsPanel.Controls.Add(this.label2);
-            this.buttonsPanel.Controls.Add(this.salesButton);
-            this.buttonsPanel.Controls.Add(this.purchaseButton);
+            this.buttonsPanel.Controls.Add(this.button2);
+            this.buttonsPanel.Controls.Add(this.button1);
+            this.buttonsPanel.Controls.Add(this.setUpStockbutton);
             this.buttonsPanel.Controls.Add(this.allItemsButton);
             this.buttonsPanel.Location = new System.Drawing.Point(2, 3);
             this.buttonsPanel.Name = "buttonsPanel";
@@ -62,21 +66,29 @@
             this.label4.Size = new System.Drawing.Size(156, 1);
             this.label4.TabIndex = 4;
             // 
+            // label5
+            // 
+            this.label5.BackColor = System.Drawing.Color.White;
+            this.label5.Location = new System.Drawing.Point(-2, 285);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(156, 1);
+            this.label5.TabIndex = 4;
+            // 
             // label1
             // 
             this.label1.BackColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(0, 232);
+            this.label1.Location = new System.Drawing.Point(-2, 233);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(156, 1);
             this.label1.TabIndex = 4;
             // 
-            // label5
+            // label3
             // 
-            this.label5.BackColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(-2, 179);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(156, 1);
-            this.label5.TabIndex = 4;
+            this.label3.BackColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(-2, 179);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(156, 1);
+            this.label3.TabIndex = 4;
             // 
             // label2
             // 
@@ -86,34 +98,48 @@
             this.label2.Size = new System.Drawing.Size(156, 1);
             this.label2.TabIndex = 4;
             // 
-            // salesButton
+            // button2
             // 
-            this.salesButton.FlatAppearance.BorderSize = 0;
-            this.salesButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.salesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.salesButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.salesButton.ForeColor = System.Drawing.Color.White;
-            this.salesButton.Location = new System.Drawing.Point(2, 183);
-            this.salesButton.Name = "salesButton";
-            this.salesButton.Size = new System.Drawing.Size(151, 49);
-            this.salesButton.TabIndex = 3;
-            this.salesButton.Text = "Sales";
-            this.salesButton.UseVisualStyleBackColor = true;
+            this.button2.FlatAppearance.BorderSize = 0;
+            this.button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.ForeColor = System.Drawing.Color.White;
+            this.button2.Location = new System.Drawing.Point(0, 233);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(153, 51);
+            this.button2.TabIndex = 3;
+            this.button2.Text = "Stock Adjustment";
+            this.button2.UseVisualStyleBackColor = true;
             // 
-            // purchaseButton
+            // button1
             // 
-            this.purchaseButton.FlatAppearance.BorderSize = 0;
-            this.purchaseButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.purchaseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.purchaseButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.purchaseButton.ForeColor = System.Drawing.Color.White;
-            this.purchaseButton.Location = new System.Drawing.Point(0, 130);
-            this.purchaseButton.Name = "purchaseButton";
-            this.purchaseButton.Size = new System.Drawing.Size(152, 49);
-            this.purchaseButton.TabIndex = 3;
-            this.purchaseButton.Text = "Purchases";
-            this.purchaseButton.UseVisualStyleBackColor = true;
-            this.purchaseButton.Click += new System.EventHandler(this.purchaseButton_Click);
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.Color.White;
+            this.button1.Location = new System.Drawing.Point(0, 181);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(152, 51);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "Stock analysis";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // setUpStockbutton
+            // 
+            this.setUpStockbutton.FlatAppearance.BorderSize = 0;
+            this.setUpStockbutton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            this.setUpStockbutton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.setUpStockbutton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.setUpStockbutton.ForeColor = System.Drawing.Color.White;
+            this.setUpStockbutton.Location = new System.Drawing.Point(0, 127);
+            this.setUpStockbutton.Name = "setUpStockbutton";
+            this.setUpStockbutton.Size = new System.Drawing.Size(153, 51);
+            this.setUpStockbutton.TabIndex = 3;
+            this.setUpStockbutton.Text = "Stock category";
+            this.setUpStockbutton.UseVisualStyleBackColor = true;
+            this.setUpStockbutton.Click += new System.EventHandler(this.setUpStockbutton_Click);
             // 
             // allItemsButton
             // 
@@ -126,7 +152,7 @@
             this.allItemsButton.Name = "allItemsButton";
             this.allItemsButton.Size = new System.Drawing.Size(153, 49);
             this.allItemsButton.TabIndex = 3;
-            this.allItemsButton.Text = "All Items";
+            this.allItemsButton.Text = "Stocks";
             this.allItemsButton.UseVisualStyleBackColor = true;
             this.allItemsButton.Click += new System.EventHandler(this.AllItemsbutton_Click);
             // 
@@ -143,7 +169,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Stocks";
+            this.Text = "Stocks Record";
             this.Load += new System.EventHandler(this.Stocks_Load);
             this.buttonsPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -154,11 +180,13 @@
 
         private System.Windows.Forms.Panel buttonsPanel;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button salesButton;
-        private System.Windows.Forms.Button purchaseButton;
         private System.Windows.Forms.Button allItemsButton;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button setUpStockbutton;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
     }
 }

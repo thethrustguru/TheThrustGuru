@@ -21,6 +21,7 @@ namespace TheThrustGuru
         private string name = "Recipe name";
         private string desc = "Description";
         private string price = "Price";
+        private string selectFood = "Select food items...";
         private bool isEdit = false;
         private IEnumerable<FoodItemsDataModel.FoodItemModel> data;
         private List<RecipeDataModel.RecipeData.items> recipeFoodItems = new List<RecipeDataModel.RecipeData.items>();
@@ -106,6 +107,10 @@ namespace TheThrustGuru
                 this.foodItemsComboBox.Items.Add(datum.name);
                
             }
+
+            if (!foodItemsComboBox.Items.Contains(selectFood))
+                foodItemsComboBox.Items.Add(selectFood);
+            foodItemsComboBox.Text = selectFood;
         }
 
         private void addButton_Click(object sender, EventArgs e)
@@ -188,7 +193,7 @@ namespace TheThrustGuru
                 return;
             }
             else errorProvider.Clear();
-            if (string.IsNullOrWhiteSpace(this.foodItemsComboBox.Text))
+            if (string.IsNullOrWhiteSpace(this.foodItemsComboBox.Text) || foodItemsComboBox.Text == selectFood)
             {
                 errorProvider.SetError(this.foodItemsComboBox, "Please select an item");
                 return;
@@ -256,6 +261,22 @@ namespace TheThrustGuru
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void foodItemsComboBox_DropDown(object sender, EventArgs e)
+        {
+            if (foodItemsComboBox.Items.Contains(selectFood))
+                foodItemsComboBox.Items.Remove(selectFood);
+        }
+
+        private void foodItemsComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            if(foodItemsComboBox.SelectedIndex == -1)
+            {
+                if (!foodItemsComboBox.Items.Contains(selectFood))
+                    foodItemsComboBox.Items.Add(selectFood);
+                foodItemsComboBox.Text = selectFood;
+            }
         }
     }
 }

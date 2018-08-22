@@ -13,6 +13,9 @@ namespace TheThrustGuru
     public partial class ManageAccountForm : Form
     {
         SuppliersForm sForm = new SuppliersForm();
+        VendorForm vForm = new VendorForm();
+        CustomersForm cForm = new CustomersForm();
+        SalesRepForm srForm = new SalesRepForm();
         public ManageAccountForm()
         {
             InitializeComponent();
@@ -21,7 +24,7 @@ namespace TheThrustGuru
 
         private void allItemsButton_Click(object sender, EventArgs e)
         {
-            this.suppliersButton.BackColor = Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
+            this.suppliersButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
             if (!sForm.Visible)
             {
 
@@ -80,6 +83,47 @@ namespace TheThrustGuru
             this.suppliersButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
             sForm.MdiParent = this;
             sForm.Show();
+        }
+
+        private void vendorButton_Click(object sender, EventArgs e)
+        {
+            this.vendorButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            if (!vForm.Visible)
+            {
+                changeColorPanel(this.buttonsPanel, this.vendorButton);
+                vForm = new VendorForm();
+                vForm.MdiParent = this;
+                vForm.Show();
+                DisposeAllButThis(vForm);
+            }
+        }
+
+        private void customersButton_Click(object sender, EventArgs e)
+        {
+            this.customersButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30))))); ;
+            if (!cForm.Visible)
+            {
+
+                changeColorPanel(this.buttonsPanel, this.customersButton);
+                cForm = new CustomersForm();
+                cForm.MdiParent = this;
+                cForm.Show();
+                DisposeAllButThis(cForm);
+            }
+        }
+
+        private void salesRepbutton_Click(object sender, EventArgs e)
+        {
+            this.salesRepbutton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            if (!srForm.Visible)
+            {
+
+                changeColorPanel(this.buttonsPanel, this.salesRepbutton);
+                srForm = new SalesRepForm();
+                srForm.MdiParent = this;
+                srForm.Show();
+                DisposeAllButThis(srForm);
+            }
         }
     }
 }

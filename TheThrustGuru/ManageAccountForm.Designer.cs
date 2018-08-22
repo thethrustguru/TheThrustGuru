@@ -33,9 +33,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.salesButton = new System.Windows.Forms.Button();
-            this.userAccountButton = new System.Windows.Forms.Button();
+            this.customersButton = new System.Windows.Forms.Button();
+            this.vendorButton = new System.Windows.Forms.Button();
             this.suppliersButton = new System.Windows.Forms.Button();
+            this.salesRepbutton = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.buttonsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,11 +45,13 @@
             // 
             this.buttonsPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
             this.buttonsPanel.Controls.Add(this.label4);
+            this.buttonsPanel.Controls.Add(this.label3);
             this.buttonsPanel.Controls.Add(this.label1);
             this.buttonsPanel.Controls.Add(this.label5);
             this.buttonsPanel.Controls.Add(this.label2);
-            this.buttonsPanel.Controls.Add(this.salesButton);
-            this.buttonsPanel.Controls.Add(this.userAccountButton);
+            this.buttonsPanel.Controls.Add(this.salesRepbutton);
+            this.buttonsPanel.Controls.Add(this.customersButton);
+            this.buttonsPanel.Controls.Add(this.vendorButton);
             this.buttonsPanel.Controls.Add(this.suppliersButton);
             this.buttonsPanel.Location = new System.Drawing.Point(3, 1);
             this.buttonsPanel.Name = "buttonsPanel";
@@ -69,7 +73,6 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(156, 1);
             this.label1.TabIndex = 4;
-            this.label1.Visible = false;
             // 
             // label5
             // 
@@ -87,34 +90,35 @@
             this.label2.Size = new System.Drawing.Size(156, 1);
             this.label2.TabIndex = 4;
             // 
-            // salesButton
+            // customersButton
             // 
-            this.salesButton.FlatAppearance.BorderSize = 0;
-            this.salesButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.salesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.salesButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.salesButton.ForeColor = System.Drawing.Color.White;
-            this.salesButton.Location = new System.Drawing.Point(2, 183);
-            this.salesButton.Name = "salesButton";
-            this.salesButton.Size = new System.Drawing.Size(151, 49);
-            this.salesButton.TabIndex = 3;
-            this.salesButton.Text = "Sales";
-            this.salesButton.UseVisualStyleBackColor = true;
-            this.salesButton.Visible = false;
+            this.customersButton.FlatAppearance.BorderSize = 0;
+            this.customersButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            this.customersButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.customersButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.customersButton.ForeColor = System.Drawing.Color.White;
+            this.customersButton.Location = new System.Drawing.Point(2, 183);
+            this.customersButton.Name = "customersButton";
+            this.customersButton.Size = new System.Drawing.Size(151, 49);
+            this.customersButton.TabIndex = 3;
+            this.customersButton.Text = "Customers";
+            this.customersButton.UseVisualStyleBackColor = true;
+            this.customersButton.Click += new System.EventHandler(this.customersButton_Click);
             // 
-            // userAccountButton
+            // vendorButton
             // 
-            this.userAccountButton.FlatAppearance.BorderSize = 0;
-            this.userAccountButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.userAccountButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.userAccountButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.userAccountButton.ForeColor = System.Drawing.Color.White;
-            this.userAccountButton.Location = new System.Drawing.Point(0, 130);
-            this.userAccountButton.Name = "userAccountButton";
-            this.userAccountButton.Size = new System.Drawing.Size(152, 49);
-            this.userAccountButton.TabIndex = 3;
-            this.userAccountButton.Text = "User Account";
-            this.userAccountButton.UseVisualStyleBackColor = true;
+            this.vendorButton.FlatAppearance.BorderSize = 0;
+            this.vendorButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            this.vendorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.vendorButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.vendorButton.ForeColor = System.Drawing.Color.White;
+            this.vendorButton.Location = new System.Drawing.Point(0, 130);
+            this.vendorButton.Name = "vendorButton";
+            this.vendorButton.Size = new System.Drawing.Size(152, 49);
+            this.vendorButton.TabIndex = 3;
+            this.vendorButton.Text = "Vendors";
+            this.vendorButton.UseVisualStyleBackColor = true;
+            this.vendorButton.Click += new System.EventHandler(this.vendorButton_Click);
             // 
             // suppliersButton
             // 
@@ -131,6 +135,29 @@
             this.suppliersButton.UseVisualStyleBackColor = true;
             this.suppliersButton.Click += new System.EventHandler(this.allItemsButton_Click);
             // 
+            // salesRepbutton
+            // 
+            this.salesRepbutton.FlatAppearance.BorderSize = 0;
+            this.salesRepbutton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            this.salesRepbutton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.salesRepbutton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.salesRepbutton.ForeColor = System.Drawing.Color.White;
+            this.salesRepbutton.Location = new System.Drawing.Point(3, 234);
+            this.salesRepbutton.Name = "salesRepbutton";
+            this.salesRepbutton.Size = new System.Drawing.Size(151, 49);
+            this.salesRepbutton.TabIndex = 3;
+            this.salesRepbutton.Text = "Sales Reps";
+            this.salesRepbutton.UseVisualStyleBackColor = true;
+            this.salesRepbutton.Click += new System.EventHandler(this.salesRepbutton_Click);
+            // 
+            // label3
+            // 
+            this.label3.BackColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(1, 283);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(156, 1);
+            this.label3.TabIndex = 4;
+            // 
             // ManageAccountForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -140,8 +167,10 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.IsMdiContainer = true;
             this.Name = "ManageAccountForm";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ManageAccountForm";
+            this.Text = "Manage Account";
             this.Load += new System.EventHandler(this.ManageAccountForm_Load);
             this.buttonsPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -155,8 +184,10 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button salesButton;
-        private System.Windows.Forms.Button userAccountButton;
+        private System.Windows.Forms.Button customersButton;
+        private System.Windows.Forms.Button vendorButton;
         private System.Windows.Forms.Button suppliersButton;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button salesRepbutton;
     }
 }

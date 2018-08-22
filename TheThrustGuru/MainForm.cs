@@ -17,9 +17,7 @@ namespace TheThrustGuru
     public partial class MainForm : Form
     {
 
-        private FoodItems foodItems = new FoodItems();
-        private Recipes recipes = new Recipes();
-        private Foods home  = new Foods();
+       
       
         public MainForm()
         {
@@ -30,7 +28,7 @@ namespace TheThrustGuru
             Left = Top = 0;
             Width = Screen.PrimaryScreen.WorkingArea.Width;
             Height = Screen.PrimaryScreen.WorkingArea.Height;
-            buttonsPanel.Height = Screen.PrimaryScreen.WorkingArea.Height;
+            //buttonsPanel.Height = Screen.PrimaryScreen.WorkingArea.Height;
 
             //NetworkChange.NetworkAvailabilityChanged += new NetworkAvailabilityChangedEventHandler(networkChangedEvent);
 
@@ -48,12 +46,7 @@ namespace TheThrustGuru
         }
 
         private void MainForm_Load(object sender, EventArgs e)
-        {
-            //home = new Home();         
-            //this.homeButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            //home.MdiParent = this;
-            //home.Show();                     
-
+        {                            
 
         }
 
@@ -88,18 +81,7 @@ namespace TheThrustGuru
             }
         }
 
-        private void changeColorPanel(Panel panel, Button button)
-        {
-            foreach(Control control in panel.Controls)
-            {
-                Button btn = control as Button;
-                if(btn != null)
-                {
-                    if(btn != button)
-                        btn.BackColor = Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-                }
-            }
-        }
+        
         private void DisposeAllButThis(Form form)
         {
             foreach (Form frm in this.MdiChildren)
@@ -115,71 +97,92 @@ namespace TheThrustGuru
         private void exitButton_Click(object sender, EventArgs e)
         {
             Application.Exit();
-        }
-
-        private void foodItemsButton_Click(object sender, EventArgs e)
-        {
-            this.foodItemsButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            //check that form is not already showing then show it
-            if (!foodItems.Visible)
-            {               
-                
-                changeColorPanel(this.buttonsPanel, this.foodItemsButton);
-                foodItems = new FoodItems();
-                foodItems.MdiParent = this;
-                foodItems.Show();
-                DisposeAllButThis(foodItems); 
-            }
-                           
-            
-        }
-
-        private void recipesButton_Click(object sender, EventArgs e)
-        {
-            //check if form is not already showing then show it 
-            if (!recipes.Visible)
-            {
-                this.recipesButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-                changeColorPanel(this.buttonsPanel, this.recipesButton);
-                recipes = new Recipes();
-                recipes.MdiParent = this;
-                recipes.Show();
-                DisposeAllButThis(recipes);
-            }
-                
-        }
-
-        private void homeButton_Click(object sender, EventArgs e)
-        {
-            if (!home.Visible)
-            {
-                this.homeButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-                changeColorPanel(this.buttonsPanel, this.homeButton);
-                home = new Foods();
-                home.MdiParent = this;
-                home.Show();
-                DisposeAllButThis(home);
-            }
-        }
+        }                   
 
         private void restuarantToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void stocksToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            new Stocks().ShowDialog();
-        }
-
-        private void restuarantToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            buttonsPanel.Visible = true;
-        }
+        }      
 
         private void manageAccountToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new ManageAccountForm().ShowDialog();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            new PointOfSaleForm().ShowDialog();
+        }
+       
+        private void setupStoreLocationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new StoreLocationForm().ShowDialog();
+        }
+
+        private void allStocksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new Stocks().ShowDialog();
+        }
+
+        private void stocksToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void purchaseInventoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new PurchasesForm().ShowDialog();
+        }
+
+        private void recipesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new Recipes().ShowDialog();
+        }
+
+        private void logOutToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            
+            
+        }
+
+        private void salesInventoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new SalesForm().ShowDialog();
+        }
+
+        private void setUpSalesTypeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new SetupSalesTypeForm().ShowDialog();
+        }
+
+        private void setupServiceChargeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new SetupSalesTypeForm(true).ShowDialog();
+        }
+
+        private void passwordButton_Click(object sender, EventArgs e)
+        {
+            new ChangePassword().ShowDialog();
+        }
+
+        private void receiptsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ReceiptForm().ShowDialog();
+        }
+
+        private void expensesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ExpensesForm().ShowDialog();
+        }
+
+        private void vouchersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new Vouchers().ShowDialog();
+        }
+
+        private void stockTransferToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new StockTransferForm().ShowDialog();
         }
     }
 }

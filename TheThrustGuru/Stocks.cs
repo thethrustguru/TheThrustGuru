@@ -12,9 +12,8 @@ namespace TheThrustGuru
 {
     public partial class Stocks : Form
     {
-
-        private PurchasesForm pForm = new PurchasesForm();
-        private AllItemsForm aForm = new AllItemsForm();
+               
+        private StocksRecordForm aForm = new StocksRecordForm();
         public Stocks()
         {
             InitializeComponent();
@@ -48,21 +47,7 @@ namespace TheThrustGuru
                     break;
                 }
             }
-        }
-
-        private void purchaseButton_Click(object sender, EventArgs e)
-        {          
-            this.purchaseButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            if (!pForm.Visible)
-            {
-
-                changeColorPanel(this.buttonsPanel, this.purchaseButton);
-                pForm = new PurchasesForm();
-                pForm.MdiParent = this;
-                pForm.Show();
-                DisposeAllButThis(pForm);
-            }
-        }
+        }     
 
         private void changeColorPanel(Panel panel, Button button)
         {
@@ -96,12 +81,17 @@ namespace TheThrustGuru
             {
 
                 changeColorPanel(this.buttonsPanel, this.allItemsButton);
-                aForm = new AllItemsForm();
+                aForm = new StocksRecordForm();
                 aForm.MdiParent = this;
                 aForm.Show();
                 DisposeAllButThis(aForm);
             }
 
+        }
+
+        private void setUpStockbutton_Click(object sender, EventArgs e)
+        {             
+            new stockCategoryForm().ShowDialog();
         }
     }
 }

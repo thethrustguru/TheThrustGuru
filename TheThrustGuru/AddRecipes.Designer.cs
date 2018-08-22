@@ -136,10 +136,12 @@
             this.foodItemsComboBox.Name = "foodItemsComboBox";
             this.foodItemsComboBox.Size = new System.Drawing.Size(222, 21);
             this.foodItemsComboBox.TabIndex = 4;
+            this.foodItemsComboBox.DropDown += new System.EventHandler(this.foodItemsComboBox_DropDown);
+            this.foodItemsComboBox.DropDownClosed += new System.EventHandler(this.foodItemsComboBox_DropDownClosed);
             // 
             // quantityTextBox
             // 
-            this.quantityTextBox.Location = new System.Drawing.Point(627, 45);
+            this.quantityTextBox.Location = new System.Drawing.Point(648, 45);
             this.quantityTextBox.Name = "quantityTextBox";
             this.quantityTextBox.Size = new System.Drawing.Size(59, 20);
             this.quantityTextBox.TabIndex = 5;
@@ -207,7 +209,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "AddRecipes";
+            this.Text = "Add Recipes";
             this.Load += new System.EventHandler(this.AddRecipes_Load);
             ((System.ComponentModel.ISupportInitialize)(this.itemsDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();

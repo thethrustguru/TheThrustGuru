@@ -68,7 +68,7 @@
             this.cartDataGridView.ReadOnly = true;
             this.cartDataGridView.RowHeadersVisible = false;
             this.cartDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.cartDataGridView.Size = new System.Drawing.Size(272, 427);
+            this.cartDataGridView.Size = new System.Drawing.Size(272, 429);
             this.cartDataGridView.TabIndex = 78;
             // 
             // seriaNoColumn
@@ -110,7 +110,7 @@
             this.foodFlowLayoutPanel.Location = new System.Drawing.Point(35, 143);
             this.foodFlowLayoutPanel.Name = "foodFlowLayoutPanel";
             this.foodFlowLayoutPanel.Padding = new System.Windows.Forms.Padding(10);
-            this.foodFlowLayoutPanel.Size = new System.Drawing.Size(528, 490);
+            this.foodFlowLayoutPanel.Size = new System.Drawing.Size(528, 485);
             this.foodFlowLayoutPanel.TabIndex = 77;
             // 
             // refreshButton
@@ -181,7 +181,7 @@
             this.clearButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
             this.clearButton.FlatAppearance.BorderSize = 0;
             this.clearButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.clearButton.Location = new System.Drawing.Point(725, 585);
+            this.clearButton.Location = new System.Drawing.Point(726, 581);
             this.clearButton.Name = "clearButton";
             this.clearButton.Size = new System.Drawing.Size(126, 48);
             this.clearButton.TabIndex = 75;
@@ -194,7 +194,7 @@
             this.checkoutButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
             this.checkoutButton.FlatAppearance.BorderSize = 0;
             this.checkoutButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkoutButton.Location = new System.Drawing.Point(579, 584);
+            this.checkoutButton.Location = new System.Drawing.Point(580, 580);
             this.checkoutButton.Name = "checkoutButton";
             this.checkoutButton.Size = new System.Drawing.Size(126, 48);
             this.checkoutButton.TabIndex = 73;

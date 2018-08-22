@@ -1,20 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
+using TheThrustGuru.Database;
 using TheThrustGuru.DataModels;
 using TheThrustGuru.Utils;
 
 namespace TheThrustGuru
 {
-    public partial class AddItem : Form
+    public partial class AddStock : Form
     {
-        private string name = "Item name";
+        private string name = "Stock name";
         private string desc = "Description";
         private string costprice = "Cost Price";
-        private string sellingPrice = "Selling Price";
+        private string sellingPrice = "Unit Price";
         private string quantity = "Quantity";
+        private string selectCategory = "Select Category";
+        private string unit = "Unit";
+        private string sku = "Sku";
+        private string vendor = "Select Preffered vendor";
+        private IEnumerable<VendorDataModel> vendorsInfo;
+        private IEnumerable<CategoryDataModel> categories;
+
         public ItemsDataModel items { get; set; }
-        public AddItem()
+        public AddStock()
         {
             InitializeComponent();
             waterMarkOnTextBoxLeave(this.nameTextBox,name);
@@ -22,8 +32,9 @@ namespace TheThrustGuru
             waterMarkOnTextBoxLeave(this.costPriceTextBox, costprice);
             waterMarkOnTextBoxLeave(this.quantityTextBox, quantity);
             waterMarkOnTextBoxLeave(this.sellingPriceTextBox, sellingPrice);
-
-            //this.nameTextBox.Validating += new CancelEventHandler(this.nameTextBox_Validating);
+            waterMarkOnTextBoxLeave(unitTextBox, unit);
+            waterMarkOnTextBoxLeave(skuTextBox, sku);
+                      
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
@@ -99,9 +110,15 @@ namespace TheThrustGuru
 
         private void AddFoodItems_Load(object sender, EventArgs e)
         {
-            this.categoryComboBox.Items.Add("Select Category");
-            this.categoryComboBox.SelectedIndex = 0;
+            if (!categoryComboBox.Items.Contains(selectCategory))
+                categoryComboBox.Items.Add(selectCategory);
+            categoryComboBox.Text = selectCategory;
 
+            if (!vendorComboBox.Items.Contains(vendor))
+                vendorComboBox.Items.Add(vendor);
+            vendorComboBox.Text = vendor;
+
+            loadVendors();
         }
 
         private void validateControls()
@@ -146,9 +163,16 @@ namespace TheThrustGuru
             string _name = nameTextBox.Text;
             string _desc = descTextBox.Text;
             string category = categoryComboBox.Text;
-            decimal cost_price = 0;
+            string sku = skuTextBox.Text;
+            string unit = unitTextBox.Text;
+            string vendorId = "", categoryId = "";
+            if (vendorComboBox.SelectedIndex != -1)
+                vendorId = vendorsInfo.ElementAt(vendorComboBox.SelectedIndex).id;            
+            if (categoryComboBox.SelectedIndex != -1)
+                categoryId = categories.ElementAt(categoryComboBox.SelectedIndex).id;
+            decimal  cost_price = 0;
             decimal selling_price = 0;
-            int quantity = 0;            
+            int quantity = 0;                        
                        
             try
             {
@@ -160,27 +184,50 @@ namespace TheThrustGuru
 
             }
 
-            //foodItems = new FoodItemsDataModel.FoodItemModel
-            //{
-            //   _id = RandomIDGenerator.randomString(8),
-            //    name = _name,
-            //    count = _total,
-            //    price = _price,
-            //    total_price = (_price * _total),
-            //    date_added = DateTime.Now.ToString(),
-            //    date_lastmodified = DateTime.Now.ToString()
-            //};
-            items = new ItemsDataModel
+            DatabaseOperations.addStocks(new StockDataModel
             {
-                itemName = name,
-                itemCostPrice = cost_price,
-                itemQuantity = quantity,
-                itemSellingPrice = selling_price,
-                itemCategory = category,
-                dateCreated = DateTime.Today.ToString()
-        };
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+                name = _name,
+                desc = _desc,
+                sku = sku,
+                unit = unit,
+                costPrice = cost_price,
+                unitPrice = selling_price,
+                quantity = quantity,
+                vendorId = vendorId,
+                categoryId = categoryId
+
+            });
+
+            nameTextBox.Clear();
+            descTextBox.Clear();
+            skuTextBox.Clear();
+            unitTextBox.Clear();
+            costPriceTextBox.Clear();
+            sellingPriceTextBox.Clear();          
+        }
+
+       private void loadVendors()
+        {
+            vendorsInfo = DatabaseOperations.getVendors();            
+            if(vendorsInfo != null && vendorsInfo.Any())
+            {
+                foreach(var data in vendorsInfo)
+                {
+                    vendorComboBox.Items.Add(data.name);
+                }
+            }
+        }
+
+        private void loadCategories()
+        {
+            categories = DatabaseOperations.getCategory();
+            if(categories != null && categories.Any())
+            {
+                foreach(var data in categories)
+                {
+                    categoryComboBox.Items.Add(data.name);
+                }
+            }
         }
 
         private bool notValid(TextBox textbox, string value)
@@ -216,6 +263,58 @@ namespace TheThrustGuru
         private void sellingPriceTextBox_Enter(object sender, EventArgs e)
         {
             waterMarkOnTextBoxEnter(this.sellingPriceTextBox, sellingPrice);
+        }
+
+        private void categoryComboBox_DropDown(object sender, EventArgs e)
+        {
+            if (categoryComboBox.Items.Contains(selectCategory))
+                categoryComboBox.Items.Remove(selectCategory);        
+        }
+
+        private void categoryComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            if(categoryComboBox.SelectedIndex == -1)
+            {
+                if (!categoryComboBox.Items.Contains(selectCategory))
+                    categoryComboBox.Items.Add(selectCategory);
+                categoryComboBox.Text = selectCategory;
+            }
+        }
+
+        private void unitTextBox_Enter(object sender, EventArgs e)
+        {
+            waterMarkOnTextBoxEnter(unitTextBox, unit);
+        }
+
+        private void unitTextBox_Leave(object sender, EventArgs e)
+        {
+            waterMarkOnTextBoxLeave(unitTextBox, unit);
+        }
+
+        private void skuTextBox_Enter(object sender, EventArgs e)
+        {
+            waterMarkOnTextBoxEnter(skuTextBox, sku);
+        }
+
+        private void skuTextBox_Leave(object sender, EventArgs e)
+        {
+            waterMarkOnTextBoxLeave(skuTextBox, sku);
+        }
+
+        private void vendorComboBox_DropDown(object sender, EventArgs e)
+        {
+            if (vendorComboBox.Items.Contains(vendor))
+                vendorComboBox.Items.Remove(vendor);
+        }
+
+        private void vendorComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            if(vendorComboBox.SelectedIndex == -1)
+            {
+                if (!vendorComboBox.Items.Contains(vendor))
+                    vendorComboBox.Items.Add(vendor);
+                vendorComboBox.Text = vendor;
+            }
         }
     }
 }
