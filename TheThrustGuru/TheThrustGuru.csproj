@@ -26,9 +26,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>9</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -63,11 +64,16 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -79,6 +85,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -90,17 +97,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddClient.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddClient.Designer.cs">
+      <DependentUpon>AddClient.cs</DependentUpon>
+    </Compile>
     <Compile Include="AddCustomers.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AddCustomers.Designer.cs">
       <DependentUpon>AddCustomers.cs</DependentUpon>
     </Compile>
+    <Compile Include="AddReceivedGoods.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddReceivedGoods.Designer.cs">
+      <DependentUpon>AddReceivedGoods.cs</DependentUpon>
+    </Compile>
     <Compile Include="AddSalesRepForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AddSalesRepForm.Designer.cs">
       <DependentUpon>AddSalesRepForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddStockAdjustment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddStockAdjustment.Designer.cs">
+      <DependentUpon>AddStockAdjustment.cs</DependentUpon>
     </Compile>
     <Compile Include="AddStockForm.cs">
       <SubType>Form</SubType>
@@ -138,13 +163,150 @@
     <Compile Include="AddVendorForm.Designer.cs">
       <DependentUpon>AddVendorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ClientForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ClientForm.Designer.cs">
+      <DependentUpon>ClientForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Clients.Designer.cs">
+      <DependentUpon>Clients.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Database\BakeryDBOperations.cs" />
+    <Compile Include="Database\BarDBOperations.cs" />
+    <Compile Include="Database\HotelDBOperations.cs" />
+    <Compile Include="Database\LaundryDBOperations.cs" />
+    <Compile Include="DataModels\ClientDataModel.cs" />
+    <Compile Include="DataModels\StockAdjustmentDataModel.cs" />
+    <Compile Include="GenSalesReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GenSalesReport.Designer.cs">
+      <DependentUpon>GenSalesReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reports.Designer.cs">
+      <DependentUpon>Reports.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ReportViewers\ResSalesReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReportViewers\ResSalesReport.Designer.cs">
+      <DependentUpon>ResSalesReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RestuarantSalesReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RestuarantSalesReport.Designer.cs">
+      <DependentUpon>RestuarantSalesReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SoldRecipes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SoldRecipes.Designer.cs">
+      <DependentUpon>SoldRecipes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockAdjustment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockAdjustment.Designer.cs">
+      <DependentUpon>StockAdjustment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DummyClass.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stores\BakeryMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stores\BakeryMainForm.Designer.cs">
+      <DependentUpon>BakeryMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Stores\BarMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stores\BarMainForm.Designer.cs">
+      <DependentUpon>BarMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Stores\HotelMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stores\HotelMainForm.Designer.cs">
+      <DependentUpon>HotelMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Stores\LaundryMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stores\LaundryMainForm.Designer.cs">
+      <DependentUpon>LaundryMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Stores\RestuarantMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stores\RestuarantMainForm.Designer.cs">
+      <DependentUpon>RestuarantMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\MessagePrompt.cs" />
+    <Compile Include="ViewRecipeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewRecipeForm.Designer.cs">
+      <DependentUpon>ViewRecipeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataModels\LoginCredentials.cs" />
+    <Compile Include="DataModels\ReceivedNotesDataModel.cs" />
+    <Compile Include="DataModels\RecipesDataModel.cs" />
+    <Compile Include="DataModels\StockTransferRecordDataModel.cs" />
+    <Compile Include="EditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditForm.Designer.cs">
+      <DependentUpon>EditForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GoodRecievedNotes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GoodRecievedNotes.Designer.cs">
+      <DependentUpon>GoodRecievedNotes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PasscodeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PasscodeForm.Designer.cs">
+      <DependentUpon>PasscodeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProfitLossForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProfitLossForm.Designer.cs">
+      <DependentUpon>ProfitLossForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SalesReportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SalesReportForm.Designer.cs">
+      <DependentUpon>SalesReportForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SetStockUnitPriceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetStockUnitPriceForm.Designer.cs">
+      <DependentUpon>SetStockUnitPriceForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataModels\AllPurchaseOrderDataModel.cs" />
     <Compile Include="DataModels\CategoryDataModel.cs" />
     <Compile Include="DataModels\CustomerDataModel.cs" />
     <Compile Include="DataModels\ExpensesDataModel.cs" />
     <Compile Include="DataModels\ReceiptDataModel.cs" />
     <Compile Include="DataModels\SalesDataModel.cs" />
     <Compile Include="DataModels\SalesRepDataModel.cs" />
+    <Compile Include="DataModels\ServiceChargeDataModel.cs" />
     <Compile Include="DataModels\StockDataModel.cs" />
+    <Compile Include="DataModels\StoreLocationDataModel.cs" />
     <Compile Include="DataModels\VendorDataModel.cs" />
     <Compile Include="DataModels\VoucherDataGridModel.cs" />
     <Compile Include="DataModels\VoucherDataModel.cs" />
@@ -160,11 +322,23 @@
     <Compile Include="IssueStockForm.Designer.cs">
       <DependentUpon>IssueStockForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PurchaseOrderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PurchaseOrderForm.Designer.cs">
+      <DependentUpon>PurchaseOrderForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ReceiptForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ReceiptForm.Designer.cs">
       <DependentUpon>ReceiptForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SetupServiceChargeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetupServiceChargeForm.Designer.cs">
+      <DependentUpon>SetupServiceChargeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="StocksRecordForm.cs">
       <SubType>Form</SubType>
@@ -194,7 +368,7 @@
     <Compile Include="DataModels\ItemsDataModel.cs" />
     <Compile Include="DataModels\LoginDataModel.cs" />
     <Compile Include="DataModels\LoginResultDataModel.cs" />
-    <Compile Include="DataModels\PurchaseDataModel.cs" />
+    <Compile Include="DataModels\PurchaseOrderDataModel.cs" />
     <Compile Include="DataModels\RecipeDataModel.cs" />
     <Compile Include="DataModels\RecipeItems.cs" />
     <Compile Include="DataModels\RecipeResultDataModel.cs" />
@@ -312,8 +486,12 @@
     <Compile Include="SuppliersForm.Designer.cs">
       <DependentUpon>SuppliersForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\ExportDb.cs" />
+    <Compile Include="Utils\TicketingSystem.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
+    <Compile Include="Utils\FormatPrice.cs" />
+    <Compile Include="Utils\GenerateIDs.cs" />
     <Compile Include="Utils\NetworkConnectivity.cs" />
     <Compile Include="Utils\RandomIDGenerator.cs" />
     <Compile Include="VendorForm.cs">
@@ -328,11 +506,20 @@
     <Compile Include="Vouchers.Designer.cs">
       <DependentUpon>Vouchers.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AddClient.resx">
+      <DependentUpon>AddClient.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AddCustomers.resx">
       <DependentUpon>AddCustomers.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AddReceivedGoods.resx">
+      <DependentUpon>AddReceivedGoods.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AddSalesRepForm.resx">
       <DependentUpon>AddSalesRepForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddStockAdjustment.resx">
+      <DependentUpon>AddStockAdjustment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AddStockForm.resx">
       <DependentUpon>AddStockForm.cs</DependentUpon>
@@ -352,14 +539,73 @@
     <EmbeddedResource Include="AddVendorForm.resx">
       <DependentUpon>AddVendorForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ClientForm.resx">
+      <DependentUpon>ClientForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Clients.resx">
+      <DependentUpon>Clients.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GenSalesReport.resx">
+      <DependentUpon>GenSalesReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports.resx">
+      <DependentUpon>Reports.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PurchaseReport.rdlc" />
+    <EmbeddedResource Include="Reports\ResReport.rdlc" />
+    <EmbeddedResource Include="ReportViewers\ResSalesReport.resx">
+      <DependentUpon>ResSalesReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RestuarantSalesReport.resx">
+      <DependentUpon>RestuarantSalesReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SoldRecipes.resx">
+      <DependentUpon>SoldRecipes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockAdjustment.resx">
+      <DependentUpon>StockAdjustment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stores\BarMainForm.resx">
+      <DependentUpon>BarMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stores\RestuarantMainForm.resx">
+      <DependentUpon>RestuarantMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewRecipeForm.resx">
+      <DependentUpon>ViewRecipeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditForm.resx">
+      <DependentUpon>EditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GoodRecievedNotes.resx">
+      <DependentUpon>GoodRecievedNotes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasscodeForm.resx">
+      <DependentUpon>PasscodeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProfitLossForm.resx">
+      <DependentUpon>ProfitLossForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SalesReportForm.resx">
+      <DependentUpon>SalesReportForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetStockUnitPriceForm.resx">
+      <DependentUpon>SetStockUnitPriceForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ExpensesForm.resx">
       <DependentUpon>ExpensesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="IssueStockForm.resx">
       <DependentUpon>IssueStockForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PurchaseOrderForm.resx">
+      <DependentUpon>PurchaseOrderForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ReceiptForm.resx">
       <DependentUpon>ReceiptForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetupServiceChargeForm.resx">
+      <DependentUpon>SetupServiceChargeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StocksRecordForm.resx">
       <DependentUpon>StocksRecordForm.cs</DependentUpon>
@@ -441,6 +687,7 @@
       <DependentUpon>Vouchers.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\TheThrustGuru.DataModels.RecipesDataModel.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -465,6 +712,16 @@
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.ReportViewer.12.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft Report Viewer 2014 Runtime</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.SqlServer.SQLSysClrTypes.12.0.x86">
+      <Visible>False</Visible>
+      <ProductName>Microsoft® System CLR Types for SQL Server® 2014 %28x86%29</ProductName>
+      <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
@@ -491,6 +748,16 @@
   <ItemGroup>
     <None Include="Resources\refresh-arrow.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fast-forward-arrows.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Refit.4.6.16\build\net461\refit.targets" Condition="Exists('..\packages\Refit.4.6.16\build\net461\refit.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -2,6 +2,7 @@
 using LiteDB;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,10 @@ namespace TheThrustGuru.Database
 {
     class DatabaseOperations
     {
+        private static void showMessage(Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
         public static void addData(List<FoodItemsDataModel.FoodItemModel> items)
         {
 
@@ -31,7 +36,8 @@ namespace TheThrustGuru.Database
                         FoodItemCollection.EnsureIndex(x => x._id, true);
                         FoodItemCollection.Insert(item);
                     }
-                } catch (LiteException ex)
+                }
+                catch (LiteException ex)
                 {
                     //show a messagebox with error message
                     MessageBox.Show(ex.Message, "Error");
@@ -73,146 +79,13 @@ namespace TheThrustGuru.Database
 
                     return data;
 
-                } catch (LiteException ex)
+                }
+                catch (LiteException ex)
                 {
                     MessageBox.Show(ex.Message);
                     return null;
                 }
 
-            }
-        }
-
-        public static void addRecipe(RecipeDataModel.RecipeData recipe)
-        {
-            using (var db = new LiteDatabase(@Constants.DB_NAME))
-            {
-                var RecipeCollection = db.GetCollection<RecipeDataModel.RecipeData>(Constants.RECIPE_TABLE_NAME);
-                var FoodItemInRecipeCollection = db.GetCollection<FoodItemsInRecipe>(Constants.FOOD_ITEM_IN_RECIPE_TABLE_NAME);
-                var RecipeItemsDataCollection = db.GetCollection<RecipeDataModel.RecipeData.items>(Constants.RECIPE_ITEMS_DATA);
-
-                try
-                {
-                    RecipeCollection.EnsureIndex(x => x.id, true);
-                    RecipeCollection.Insert(recipe);
-                    foreach (var data in recipe.itemsData)
-                    {
-                        data.id = recipe.id;
-                        RecipeItemsDataCollection.EnsureIndex(x => x.id);
-                        RecipeItemsDataCollection.Insert(data);
-                        FoodItemInRecipeCollection.Insert(new FoodItemsInRecipe { id = (FoodItemInRecipeCollection.Count() + 1).ToString(), itemId = data.id, foodItemId = data.foodItems._id });
-
-                    }
-                } catch (LiteException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error");
-                }
-            }
-        }
-
-        public static void addRecipe(RecipeDataModel recipeDataModel)
-        {
-            using (var db = new LiteDatabase(@Constants.DB_NAME))
-            {
-                var RecipeCollection = db.GetCollection<RecipeDataModel.RecipeData>(Constants.RECIPE_TABLE_NAME);
-                var FoodItemInRecipeCollection = db.GetCollection<FoodItemsInRecipe>(Constants.FOOD_ITEM_IN_RECIPE_TABLE_NAME);
-                var RecipeItemsDataCollection = db.GetCollection<RecipeDataModel.RecipeData.items>(Constants.RECIPE_ITEMS_DATA);
-
-                try
-                {
-                    foreach (var recipe in recipeDataModel.results)
-                    {
-
-                        RecipeCollection.EnsureIndex(x => x.id, true);
-                        RecipeCollection.Insert(recipe);
-                        if (recipe.itemsData != null && recipe.itemsData.Any())
-                            foreach (var data in recipe.itemsData)
-                            {
-                                data.recipeId = recipe.id;
-                                RecipeItemsDataCollection.EnsureIndex(x => x.id);
-                                RecipeItemsDataCollection.Insert(data);
-                                if (data.foodItems != null)
-                                    FoodItemInRecipeCollection.Insert(new FoodItemsInRecipe { id = (FoodItemInRecipeCollection.Count() + 1).ToString(), itemId = data.id, foodItemId = data.foodItems._id });
-
-                            }
-                    }
-                }
-                catch (LiteException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error");
-                }
-            }
-        }
-
-        public static IEnumerable<RecipeDataModel.RecipeData> getRecipe()
-        {
-            using (var db = new LiteDatabase(Constants.DB_NAME))
-            {
-                var RecipeCollection = db.GetCollection<RecipeDataModel.RecipeData>(Constants.RECIPE_TABLE_NAME);
-                var FoodItemInRecipeCollection = db.GetCollection<FoodItemsInRecipe>(Constants.FOOD_ITEM_IN_RECIPE_TABLE_NAME);
-                var RecipeItemsDataCollection = db.GetCollection<RecipeDataModel.RecipeData.items>(Constants.RECIPE_ITEMS_DATA);
-                var FoodItemCollection = db.GetCollection<FoodItemsDataModel.FoodItemModel>(Constants.FOOD_ITEM_TABLE_NAME);
-
-
-                var recipeData = RecipeCollection.Find(Query.All("recipeName", Query.Ascending), limit: 100);
-                if (recipeData == null || !recipeData.Any())
-                    return null;
-                foreach (var recipe in recipeData)
-                {
-                    var recipeItems = RecipeItemsDataCollection.Find(Query.EQ("recipeId", recipe.id));
-                    if (recipeItems == null || !recipeItems.Any())
-                        return null;
-                    for (int j = 0; j < recipeItems.Count(); j++)
-                    {
-                        var data = FoodItemInRecipeCollection.FindOne(Query.EQ("itemId", recipeItems.ElementAt(j).id));
-                        if (data == null)
-                            continue;
-                        var food = FoodItemCollection.FindOne(Query.EQ("_id", data.foodItemId));
-                        if (food == null)
-                            continue;
-                        recipeItems.ElementAt(j).foodItems = food;
-                    }
-                    recipe.itemsData = recipeItems.ToList();
-                }
-                return recipeData;
-
-
-                //try
-                //{
-                //    var recipeData = RecipeCollection.Find(Query.All("recipeName", Query.Ascending), limit: 100);
-                //    if (recipeData == null || !recipeData.Any())
-                //        return null;
-                //    foreach(var recipe in recipeData)
-                //    {
-                //        var recipeItems = RecipeItemsDataCollection.Find(Query.EQ("recipeId", recipe.id));
-                //        if (recipeItems == null || !recipeItems.Any())
-                //            return null;
-                //        for (int j = 0; j <= recipeItems.Count(); j++)
-                //        {
-                //            var data = FoodItemInRecipeCollection.FindOne(Query.EQ("itemId", recipeItems.ElementAt(j).id));
-                //            if (data == null)
-                //                continue;
-                //            var food = FoodItemCollection.FindOne(Query.EQ("_id", data.foodItemId));
-                //            if (food == null)
-                //                continue;
-                //            recipeItems.ElementAt(j).foodItems = food;
-                //        }
-                //        recipe.itemsData = recipeItems.ToList();
-                //    }
-                //    return recipeData;
-                //}catch(Exception ex)
-                //{
-                //    MessageBox.Show(ex.Message);
-                //    return null;
-                //}
-            }
-        }
-
-        public static void deleteRecipe(string id)
-        {
-            using (var db = new LiteDatabase(Constants.DB_NAME))
-            {
-                var RecipeCollection = db.GetCollection<RecipeDataModel>(Constants.RECIPE_TABLE_NAME);
-                var FoodItemInRecipeCollection = db.GetCollection<FoodItemsInRecipe>(Constants.FOOD_ITEM_IN_RECIPE_TABLE_NAME);
             }
         }
 
@@ -264,41 +137,6 @@ namespace TheThrustGuru.Database
             }
         }
 
-        public static void saveItems(ItemsDataModel items)
-        {
-            using (var db = new LiteDatabase(Constants.DB_NAME))
-            {
-                var itemCollection = db.GetCollection<ItemsDataModel>(Constants.ITEM_TABLE_NAME);
-                int count = itemCollection.Count();
-
-                try
-                {
-                    items.id = (count + 1).ToString();
-                    itemCollection.EnsureIndex(x => x.id, true);
-                    itemCollection.Insert(items);
-                } catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-        }
-
-        public static IEnumerable<ItemsDataModel> getItems()
-        {
-            using (var db = new LiteDatabase(Constants.DB_NAME))
-            {
-                var itemCollection = db.GetCollection<ItemsDataModel>(Constants.ITEM_TABLE_NAME);
-                try
-                {
-                    return itemCollection.Find(Query.All("itemName", Query.Ascending), limit: 100);
-                } catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    return null;
-                }
-            }
-        }
-
         public static void AddFood(FoodsDataModel foods)
         {
             using (var db = new LiteDatabase(Constants.DB_NAME))
@@ -310,7 +148,8 @@ namespace TheThrustGuru.Database
                     foods.id = index.ToString();
                     foodsCollection.EnsureIndex(x => x.id, true);
                     foodsCollection.Insert(foods);
-                } catch (LiteException ex)
+                }
+                catch (LiteException ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
@@ -325,7 +164,8 @@ namespace TheThrustGuru.Database
                 try
                 {
                     return foodsCollection.Find(Query.All("name", Query.Ascending));
-                } catch (LiteException ex)
+                }
+                catch (LiteException ex)
                 {
                     MessageBox.Show(ex.Message);
                     return null;
@@ -341,10 +181,10 @@ namespace TheThrustGuru.Database
                 try
                 {
                     int index = suppliersCollection.Count() + 1;
-                    suppliers.id = index.ToString();
-                    suppliersCollection.EnsureIndex(x => x.id, true);
+                    suppliers.id = index.ToString();                    
                     suppliersCollection.Insert(suppliers);
-                } catch (LiteException ex)
+                }
+                catch (LiteException ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
@@ -359,7 +199,8 @@ namespace TheThrustGuru.Database
                 try
                 {
                     return suppliersCollection.Find(Query.All("name", Query.Ascending));
-                } catch (LiteException ex)
+                }
+                catch (LiteException ex)
                 {
                     MessageBox.Show(ex.Message);
                     return null;
@@ -367,51 +208,162 @@ namespace TheThrustGuru.Database
             }
         }
 
-        public static void addPurchases(PurchaseDataModel purchase)
+        public static async Task<bool> editSupplier(SupplierDataModel supplier)
+        {
+            using (var db = new LiteDatabase(@Constants.DB_NAME))
+            {
+                var suppliersCollection = db.GetCollection<SupplierDataModel>(Constants.SUPPLIERS_TABLE_NAME);
+                try
+                {
+                    return suppliersCollection.Update(supplier);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task<bool> deleteSupplier(string id)
+        {
+            using (var db = new LiteDatabase(@Constants.DB_NAME))
+            {
+                var suppliersCollection = db.GetCollection<SupplierDataModel>(Constants.SUPPLIERS_TABLE_NAME);
+                try
+                {
+                    return suppliersCollection.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task<bool> addClient(ClientDataModel client)
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var clientCollections = db.GetCollection<ClientDataModel>(Constants.CLIENT_TABLE_NAME);
+                var loginCollections = db.GetCollection<LoginCredentials>(Constants.LOGIN_CREDENTIALS_TABLE_NAME);
+                try
+                {
+                    var data = clientCollections.FindOne(x => x.name == client.name);
+                    if(data != null)
+                    {
+                        MessageBox.Show("Client Name already exists");
+                        return false;
+                    }
+                    int index = clientCollections.Count() + 1;
+                    int index2 = loginCollections.Count() + 1;
+                    client.id = index.ToString();
+                    clientCollections.Insert(client);
+                    clientCollections.EnsureIndex(x => x.name);
+                    var dt = new LoginCredentials
+                    {
+                        id = index2.ToString(),
+                        username = client.username,
+                        password = client.password,
+                        isAdmin = false,
+                        role = client.role,
+                        storeLocation = client.storeLocation
+
+                    };             
+                    var dr = loginCollections.Insert(dt);
+                    return true;
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+        }
+
+        public static async Task<List<ClientDataModel>> getClients()
         {
             using (var db = new LiteDatabase(Constants.DB_NAME))
             {
-                var purchaseCollections = db.GetCollection<PurchaseDataModel>(Constants.PURCHASE_TABLE_NAME);
-                var productCollections = db.GetCollection<PurchaseDataModel.Product>(Constants.PRODUCTS_TABLE_NAME);
+                var clientCollections = db.GetCollection<ClientDataModel>(Constants.CLIENT_TABLE_NAME);
+                try
+                {
+                    return clientCollections.Find(Query.All()).ToList();
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+        }
+        }
+
+        public static async Task<bool> editClient(ClientDataModel client)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var clientCollections = db.GetCollection<ClientDataModel>(Constants.CLIENT_TABLE_NAME);
+                try
+                {
+                    return clientCollections.Update(client);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task<bool> deleteClient(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var clientCollections = db.GetCollection<ClientDataModel>(Constants.CLIENT_TABLE_NAME);
+                try
+                {
+                    return clientCollections.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static void addPurchases(PurchaseOrderDataModel purchase)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var purchaseCollections = db.GetCollection<PurchaseOrderDataModel>(Constants.PURCHASE_TABLE_NAME);
+                var productCollections = db.GetCollection<PurchaseOrderDataModel.PurchasedStock>(Constants.PRODUCTS_TABLE_NAME);
                 try
                 {
                     int index = purchaseCollections.Count() + 1;
                     purchase.id = index.ToString();
-                    purchaseCollections.EnsureIndex(x => x.id, true);
                     purchaseCollections.Insert(purchase);
                     foreach (var data in purchase.productsList)
                     {
                         data.id = (productCollections.Count() + 1).ToString();
                         data.purchaseId = index.ToString();
+                        data.dateCreated = DateTime.Now;
                         productCollections.Insert(data);
 
                     }
-                } catch (LiteException ex)
+                }
+                catch (LiteException ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
             }
         }
 
-        public static IEnumerable<PurchaseDataModel> getPurchases()
+        public static IEnumerable<PurchaseOrderDataModel> getPurchases()
         {
             using (var db = new LiteDatabase(Constants.DB_NAME))
             {
-                var purchaseCollections = db.GetCollection<PurchaseDataModel>(Constants.PURCHASE_TABLE_NAME);
-                var productCollections = db.GetCollection<PurchaseDataModel.Product>(Constants.PRODUCTS_TABLE_NAME);
+                var purchaseCollections = db.GetCollection<PurchaseOrderDataModel>(Constants.PURCHASE_TABLE_NAME);
                 try
                 {
-                    var data = purchaseCollections.Find(Query.All("date", Query.Descending));
-                    if (!data.Any())
-                        return null;
-                    for (int i = 0; i < data.Count(); i++)
-                    {
-                        var product = productCollections.Find(x => x.purchaseId == data.ElementAt(i).id);
-                        if (product.Any())
-                            data.ElementAt(i).productsList = product.ToList();
-                    }
-                    return data;
-                } catch (Exception ex)
+                    return purchaseCollections.Find(Query.All());
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                     return null;
@@ -419,7 +371,107 @@ namespace TheThrustGuru.Database
             }
         }
 
-        public static void addCustomers(CustomerDataModel customers)
+        public static async Task<PurchaseOrderDataModel> getPurchaseOrderById(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var purchaseCollections = db.GetCollection<PurchaseOrderDataModel>(Constants.PURCHASE_TABLE_NAME);
+                try
+                {
+                    return purchaseCollections.FindOne(x => x.id == id);
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<PurchaseOrderDataModel> getPurchaseOderByOrderId(string orderid)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var purchaseCollections = db.GetCollection<PurchaseOrderDataModel>(Constants.PURCHASE_TABLE_NAME);
+                try
+                {
+                    return purchaseCollections.FindOne(x => x.orderNo == orderid);
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editpurchases(PurchaseOrderDataModel purchases)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var purchaseCollections = db.GetCollection<PurchaseOrderDataModel>(Constants.PURCHASE_TABLE_NAME);
+                try
+                {
+                    return purchaseCollections.Update(purchases);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task<bool> deletePurchase(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var purchaseCollections = db.GetCollection<PurchaseOrderDataModel>(Constants.PURCHASE_TABLE_NAME);
+                try
+                {
+                    return purchaseCollections.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        //public static async Task<IEnumerable<PurchaseOrderDataModel>> getPurchasesByDate(DateTime dateFrom, DateTime dateTo)
+        //{
+        //    using (var db = new LiteDatabase(Constants.DB_NAME))
+        //    {
+        //        var purchaseCollections = db.GetCollection<PurchaseOrderDataModel>(Constants.PURCHASE_TABLE_NAME);
+        //        try
+        //        {
+        //            var data = purchaseCollections.Find(x => x.dat)
+        //        }catch(Exception ex)
+        //        {
+        //            showMessage(ex);
+        //            return null;
+        //        }
+        //    }
+        //}
+
+        public static async Task<List<PurchaseOrderDataModel.PurchasedStock>> getPurchasedStocksByDate(DateTime dateFrom, DateTime dateTo)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var productCollections = db.GetCollection<PurchaseOrderDataModel.PurchasedStock>(Constants.PRODUCTS_TABLE_NAME);
+                try
+                {
+                    var data = productCollections.Find(x => x.dateCreated >= dateFrom && x.dateCreated <= dateTo);
+                    return data.ToList();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> addCustomers(CustomerDataModel customers)
         {
             using (var db = new LiteDatabase(Constants.DB_NAME))
             {
@@ -427,22 +479,35 @@ namespace TheThrustGuru.Database
                 var voucherCollections = db.GetCollection<VoucherDataModel>(Constants.VOUCHER_TABLE_NAME);
                 try
                 {
+                    var data = customerCollections.Find(x => x.customerName == customers.customerName);
+                    if (data != null && data.Any())
+                    {
+                        MessageBox.Show("Customer already exists", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }                       
+
                     int index = customerCollections.Count() + 1;
                     customers.id = index.ToString();
                     customerCollections.Insert(customers);
 
-                    VoucherDataModel voucher = new VoucherDataModel()
+                    if (!string.IsNullOrEmpty(customers.voucherCode))
                     {
-                        id = (voucherCollections.Count() + 1).ToString(),
-                        code = customers.voucherCode,
-                        customerId = index.ToString(),
-                        usedCount = 0
-                    };
-                    voucherCollections.Insert(voucher);
+                        VoucherDataModel voucher = new VoucherDataModel()
+                        {
+                            id = (voucherCollections.Count() + 1).ToString(),
+                            code = customers.voucherCode,
+                            customerId = index.ToString(),
+                            usedCount = 0
+                        };
+                        voucherCollections.Insert(voucher);
+                    }                    
+                    return true;
 
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    showMessage(ex);
+                    return false;
                 }
             }
         }
@@ -464,14 +529,14 @@ namespace TheThrustGuru.Database
             }
         }
 
-        public static IEnumerable<CustomerDataModel> getCustomers(bool value)
+        public static IEnumerable<CustomerDataModel> getCustomers(bool isVoucherAvailable)
         {
             using (var db = new LiteDatabase(Constants.DB_NAME))
             {
                 var customerCollections = db.GetCollection<CustomerDataModel>(Constants.CUSTOMER_TABLE_NAME);
                 try
                 {
-                    return customerCollections.Find(x => x.isVoucherAvailable == value);
+                    return customerCollections.Find(x => x.isVoucherAvailable == isVoucherAvailable);
                 }
                 catch (Exception ex)
                 {
@@ -492,10 +557,45 @@ namespace TheThrustGuru.Database
                     if (data != null)
                         return data.customerName;
                     else return "";
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                     return "";
+                }
+            }
+        }
+
+        public static async Task<bool> editCustomers(CustomerDataModel customers)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var customerCollections = db.GetCollection<CustomerDataModel>(Constants.CUSTOMER_TABLE_NAME);
+                try
+                {
+                    return customerCollections.Update(customers);
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+        }
+
+        public static async Task<bool> deleteCustomers(CustomerDataModel customer)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var customerCollections = db.GetCollection<CustomerDataModel>(Constants.CUSTOMER_TABLE_NAME);
+                try
+                {
+                    return customerCollections.Delete(customer.id);
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
                 }
             }
         }
@@ -518,7 +618,8 @@ namespace TheThrustGuru.Database
                         data.voucherCode = voucher.code;
                         customerCollections.Update(data);
                     }
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
@@ -533,10 +634,45 @@ namespace TheThrustGuru.Database
                 try
                 {
                     return voucherCollections.Find(Query.All());
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                     return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editVoucher(VoucherDataModel voucher)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var voucherCollections = db.GetCollection<VoucherDataModel>(Constants.VOUCHER_TABLE_NAME);
+                try
+                {
+                    return voucherCollections.Update(voucher);
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+        }
+
+        public static async Task<bool> deleteVoucher(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var voucherCollections = db.GetCollection<VoucherDataModel>(Constants.VOUCHER_TABLE_NAME);
+                try
+                {
+                    return voucherCollections.Delete(id);
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
                 }
             }
         }
@@ -546,12 +682,25 @@ namespace TheThrustGuru.Database
             using (var db = new LiteDatabase(Constants.DB_NAME))
             {
                 var salesRepCollections = db.GetCollection<SalesRepDataModel>(Constants.SALES_REP_TABLE_NAME);
+                var loginCollections = db.GetCollection<LoginCredentials>(Constants.LOGIN_CREDENTIALS_TABLE_NAME);
                 try
                 {
                     int index = salesRepCollections.Count() + 1;
+                    int index2 = loginCollections.Count() + 1;
                     salesRep.id = index.ToString();
                     salesRepCollections.Insert(salesRep);
-                } catch (Exception ex)
+                    loginCollections.Insert(new LoginCredentials
+                    {
+                        id = index2.ToString(),
+                        username = salesRep.username,
+                        password = salesRep.password,
+                        isAdmin = false,
+                        role = Constants.ROLE_SALES_REP,
+                        storeLocation = salesRep.storeLocation,
+                        salesRepId = index.ToString()
+                    });
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
@@ -566,9 +715,61 @@ namespace TheThrustGuru.Database
                 try
                 {
                     return salesRepCollections.Find(Query.All("name", Query.Ascending));
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editSalesRep(SalesRepDataModel salesRep)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var salesRepCollections = db.GetCollection<SalesRepDataModel>(Constants.SALES_REP_TABLE_NAME);
+                try
+                {
+                    return salesRepCollections.Update(salesRep);
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+        }
+
+        public static async Task<bool> deleteSalesRep(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var salesRepCollections = db.GetCollection<SalesRepDataModel>(Constants.SALES_REP_TABLE_NAME);
+                try
+                {
+                    return salesRepCollections.Delete(id);
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+        }
+
+        public static IEnumerable<LoginCredentials> getLoginDetails()
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var loginCollections = db.GetCollection<LoginCredentials>(Constants.LOGIN_CREDENTIALS_TABLE_NAME);
+                try
+                {
+                    return loginCollections.Find(Query.All());
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
                     return null;
                 }
             }
@@ -585,7 +786,8 @@ namespace TheThrustGuru.Database
                     int index = vendorCollections.Count() + 1;
                     vendor.id = index.ToString();
                     vendorCollections.Insert(vendor);
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
@@ -601,12 +803,49 @@ namespace TheThrustGuru.Database
                 try
                 {
                     return vendorCollections.Find(Query.All("name", Query.Ascending));
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                     return null;
                 }
             }
+        }
+
+        public static async Task<bool> editVendors(VendorDataModel vendor)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var vendorCollections = db.GetCollection<VendorDataModel>(Constants.VENDOR_TABLE_NAME);
+
+                try
+                {
+                    return vendorCollections.Update(vendor);
+                } catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+
+        }
+
+        public static async Task<bool> deleteVendor(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var vendorCollections = db.GetCollection<VendorDataModel>(Constants.VENDOR_TABLE_NAME);
+
+                try
+                {
+                    return vendorCollections.Delete(id);
+                } catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+
         }
 
         public static void addExpenses(ExpensesDataModel expense)
@@ -643,17 +882,86 @@ namespace TheThrustGuru.Database
             }
         }
 
-        public static void addReceipt(ReceiptDataModel receipt)
+        public static async Task<IEnumerable<ExpensesDataModel>> getExpensesByDate(DateTime dateFrom, DateTime dateTo)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var expenseCollections = db.GetCollection<ExpensesDataModel>(Constants.EXPENSES_TABLE_NAME);
+                try
+                {
+                    var data = expenseCollections.Find(x => x.date >= dateFrom && x.date <= dateTo);
+                    return data;
+                } catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editExpenses(ExpensesDataModel expenses)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var expenseCollections = db.GetCollection<ExpensesDataModel>(Constants.EXPENSES_TABLE_NAME);
+                try
+                {
+                    return expenseCollections.Update(expenses);
+                } catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+        }
+
+        public static async Task<bool> deleteExpense(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var expenseCollections = db.GetCollection<ExpensesDataModel>(Constants.EXPENSES_TABLE_NAME);
+                try
+                {
+                    return expenseCollections.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        } 
+
+        public static async Task addReceipt(ReceiptDataModel receipt)
         {
             using (var db = new LiteDatabase(Constants.DB_NAME))
             {
                 var receiptCollections = db.GetCollection<ReceiptDataModel>(Constants.RECEIPT_TABLE_NAME);
                 var soldItemsCollection = db.GetCollection<SalesDataModel>(Constants.SALES_TABLE_NAME);
+                var stockCollections = db.GetCollection<StockDataModel>(Constants.STOCK_TABLE_NAME);
+                var customerCollections = db.GetCollection<CustomerDataModel>(Constants.CUSTOMER_TABLE_NAME);
+                var voucherCollections = db.GetCollection<VoucherDataModel>(Constants.VOUCHER_TABLE_NAME);
                 try
                 {
                     int index = receiptCollections.Count() + 1, index2;
                     receipt.id = index.ToString();
                     receiptCollections.Insert(receipt);
+
+                    if(receipt.customerId != null)
+                    {
+                        var customer = customerCollections.FindOne(x => x.id == receipt.customerId);
+                        if(customer != null)
+                        {
+                            decimal bal = receipt.amountPayable - receipt.totalAmtPaid;
+                            customer.balance += bal;
+                            customerCollections.Update(customer);
+                            var voucher = voucherCollections.FindOne(x => x.customerId == customer.id);
+                            if(voucher != null)
+                            {
+                                voucher.usedCount += 1;
+                                voucherCollections.Update(voucher);
+                            }
+                        }
+                    }
 
                     if (receipt.soldItems != null && receipt.soldItems.Count > 0)
                         foreach (var data in receipt.soldItems)
@@ -662,6 +970,13 @@ namespace TheThrustGuru.Database
                             data.id = index2.ToString();
                             data.receiptId = index.ToString();
                             soldItemsCollection.Insert(data);
+
+                            var stock = stockCollections.FindOne(x => x.id == data.stockId);
+                            if (stock != null && stock.quantity >= 0)
+                            {
+                                stock.quantity -= 1;
+                                stockCollections.Update(stock);
+                            }
                         }
                 } catch (Exception ex)
                 {
@@ -680,19 +995,117 @@ namespace TheThrustGuru.Database
                 try
                 {
                     var receipts = new List<ReceiptDataModel>(receiptCollections.Find(Query.All()).ToList());
-                    if (receipts != null && receipts.Any())
-                        for (int i = 0; i < receipts.Count(); i++)
-                        {
-                            var soldItem = soldItemsCollection.Find(x => x.receiptId == receipts.ElementAt(i).id);
-                            if (soldItem != null && soldItem.Any())
-                                receipts.ElementAt(i).soldItems = soldItem.ToList();
-                        }
+                    //if (receipts != null && receipts.Any())
+                    //    for (int i = 0; i < receipts.Count(); i++)
+                    //    {
+                    //        var soldItem = soldItemsCollection.Find(x => x.receiptId == receipts.ElementAt(i).id);
+                    //        if (soldItem != null && soldItem.Any())
+                    //            receipts.ElementAt(i).soldItems = soldItem.ToList();
+                    //    }
                     return receipts;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                     return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editReceipts(ReceiptDataModel receipt)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var receiptCollections = db.GetCollection<ReceiptDataModel>(Constants.RECEIPT_TABLE_NAME);               
+                try
+                {
+                    return receiptCollections.Update(receipt);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task<bool> deleteReceipt(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var receiptCollections = db.GetCollection<ReceiptDataModel>(Constants.RECEIPT_TABLE_NAME);
+                try
+                {
+                    return receiptCollections.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static IEnumerable<SalesDataModel> getSoldStocks()
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var soldStocksCollection = db.GetCollection<SalesDataModel>(Constants.SALES_TABLE_NAME);
+                try
+                {
+                    return soldStocksCollection.Find(Query.All());
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<IEnumerable<SalesDataModel>> getSoldStocksByDate(DateTime dateFrom, DateTime dateTo)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var soldStocksCollection = db.GetCollection<SalesDataModel>(Constants.SALES_TABLE_NAME);
+                try
+                {
+                    var data = soldStocksCollection.Find(x => x.date >= dateFrom && x.date <= dateTo);
+                    return data;
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editSoldStocks(SalesDataModel sales)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var soldStocksCollection = db.GetCollection<SalesDataModel>(Constants.SALES_TABLE_NAME);
+                try
+                {
+                    return soldStocksCollection.Update(sales);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+
+        }
+
+        public static async Task<bool> deleteSoldItems(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var soldStocksCollection = db.GetCollection<SalesDataModel>(Constants.SALES_TABLE_NAME);
+                try
+                {
+                    return soldStocksCollection.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
                 }
             }
         }
@@ -712,7 +1125,7 @@ namespace TheThrustGuru.Database
                     MessageBox.Show(ex.Message);
                 }
             }
-        }
+        }       
 
         public static IEnumerable<StockDataModel> getStocks()
         {
@@ -746,23 +1159,141 @@ namespace TheThrustGuru.Database
             }
         }
 
-        public static void addCategory(CategoryDataModel category)
+        public static async Task<IEnumerable<StockDataModel>> getStocksByCategoryId(string categoryId)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var stockCollections = db.GetCollection<StockDataModel>(Constants.STOCK_TABLE_NAME);
+                try
+                {
+                    return stockCollections.Find(x => x.categoryId == categoryId);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<IEnumerable<StockDataModel>> getStocksByCategoryAndStore(string categoryId, string storeName)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var stockCollections = db.GetCollection<StockDataModel>(Constants.STOCK_TABLE_NAME);
+                try
+                {
+                    return stockCollections.Find(x => x.categoryId == categoryId && x.storeLocation == storeName);
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+
+        public static async Task<List<StockDataModel>> getStocksAvailableByDateCreated(DateTime dateCreated)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var stockCollections = db.GetCollection<StockDataModel>(Constants.STOCK_TABLE_NAME);
+                try
+                {
+                    var availableStocks = new List<StockDataModel>();
+                    availableStocks = stockCollections.Find(x => x.date <= dateCreated).ToList();
+                    return availableStocks;
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<List<StockDataModel>> getAvailableStocks()
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var stocksCollection = db.GetCollection<StockDataModel>(Constants.STOCK_TABLE_NAME);
+                try
+                {
+                    var availableStocks = new List<StockDataModel>();
+                    var data = stocksCollection.Find(Query.All());
+                    if(data != null && data.Any())
+                    {
+                        foreach(var datum in data)
+                        {
+                            if (datum.quantity > 0)
+                                availableStocks.Add(datum);
+                        }
+                    }
+                    return availableStocks;
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static void updateStock(StockDataModel stock)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var stockCollections = db.GetCollection<StockDataModel>(Constants.STOCK_TABLE_NAME);
+                try
+                {
+                    stockCollections.Update(stock);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                }
+            }
+        }
+
+        public static async Task<bool> deleteStock(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var stockCollections = db.GetCollection<StockDataModel>(Constants.STOCK_TABLE_NAME);
+                try
+                {
+                    return stockCollections.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+
+        }
+
+        public static async Task<bool> addCategory(CategoryDataModel category)
         {
             using (var db = new LiteDatabase(Constants.DB_NAME))
             {
                 var categoryCollections = db.GetCollection<CategoryDataModel>(Constants.CATEGORY_TABLE_NAME);
                 try
                 {
+                    var data = categoryCollections.FindOne(x => x.name == category.name);
+                    if (data != null)
+                        return false;
+
                     int index = categoryCollections.Count() + 1;
                     category.id = index.ToString();
                     categoryCollections.Insert(category);
+
+                    return true;
                 } catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    showMessage(ex);
+                    return false;
                 }
 
             }
         }
+
         public static IEnumerable<CategoryDataModel> getCategory()
         {
             using (var db = new LiteDatabase(Constants.DB_NAME))
@@ -778,5 +1309,739 @@ namespace TheThrustGuru.Database
                 }
             }
         }
+
+        public static string getCategoryName(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var categoryCollections = db.GetCollection<CategoryDataModel>(Constants.CATEGORY_TABLE_NAME);
+                try
+                {
+                    return categoryCollections.FindOne(x => x.id == id).name;
+                }catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return "";
+                }
+            }
+        }
+
+        public static async Task<bool> updateCategory(CategoryDataModel category)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var categoryCollections = db.GetCollection<CategoryDataModel>(Constants.CATEGORY_TABLE_NAME);
+                try
+                {
+                    return categoryCollections.Update(category);
+                }catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return false;
+                }
+            }
+        }
+
+        public static async Task<bool> deleteCategory(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var categoryCollections = db.GetCollection<CategoryDataModel>(Constants.CATEGORY_TABLE_NAME);
+                try
+                {
+                    return categoryCollections.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static void addServiceCharge(ServiceChargeDataModel serviceCharge)
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var serviceChargeCollections = db.GetCollection<ServiceChargeDataModel>(Constants.SERVICE_CHARGE_TABLE_NAME);
+                try
+                {
+                    int index = serviceChargeCollections.Count() + 1;
+                    serviceCharge.id = index.ToString();
+                    serviceChargeCollections.Insert(serviceCharge);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                }
+            }
+        }
+
+        public static IEnumerable<ServiceChargeDataModel> getServiceCharge()
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var serviceChargeCollections = db.GetCollection<ServiceChargeDataModel>(Constants.SERVICE_CHARGE_TABLE_NAME);
+                try
+                {
+                    return serviceChargeCollections.Find(Query.All());
+                }
+                catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editServiceCharge(ServiceChargeDataModel serviceCharge)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var serviceChargeCollections = db.GetCollection<ServiceChargeDataModel>(Constants.SERVICE_CHARGE_TABLE_NAME);
+                try
+                {
+                    return serviceChargeCollections.Update(serviceCharge);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+
+        }
+
+        public static async Task<bool> deleteServiceCharge(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var serviceChargeCollections = db.GetCollection<ServiceChargeDataModel>(Constants.SERVICE_CHARGE_TABLE_NAME);
+                try
+                {
+                    return serviceChargeCollections.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static void addSalesType(ServiceChargeDataModel salesType)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var salesTypeCollections = db.GetCollection<ServiceChargeDataModel>(Constants.SALES_TYPE_TABLE_NAME);
+                try
+                {
+                    int index = salesTypeCollections.Count() + 1;
+                    salesType.id = index.ToString();
+                    salesTypeCollections.Insert(salesType);
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
+                }
+            }
+        }
+
+        public static IEnumerable<ServiceChargeDataModel> getSalesType()
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var salesTypeCollections = db.GetCollection<ServiceChargeDataModel>(Constants.SALES_TYPE_TABLE_NAME);
+                try
+                {
+                    return salesTypeCollections.Find(Query.All());
+                }
+                catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editSalesType(ServiceChargeDataModel serviceCharge)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var salesTypeCollections = db.GetCollection<ServiceChargeDataModel>(Constants.SALES_TYPE_TABLE_NAME);
+                try
+                {
+                    return salesTypeCollections.Update(serviceCharge);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task<bool> deleteSalesType(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var salesTypeCollections = db.GetCollection<ServiceChargeDataModel>(Constants.SALES_TYPE_TABLE_NAME);
+                try
+                {
+                    return salesTypeCollections.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static void addStoreLocation(StoreLocationDataModel storeLocation)
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var storeCollections = db.GetCollection<StoreLocationDataModel>(Constants.STORE_LOCATION_TABLE_NAME);
+                try
+                {
+                    int index = storeCollections.Count() + 1;
+                    storeLocation.id = index.ToString();
+                    storeCollections.Insert(storeLocation);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                }
+            }
+        }
+
+        public static IEnumerable<StoreLocationDataModel> getStores()
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var storeCollections = db.GetCollection<StoreLocationDataModel>(Constants.STORE_LOCATION_TABLE_NAME);
+                try
+                {
+                    return storeCollections.Find(Query.All());
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public async static Task<StoreLocationDataModel> getStoreById(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var storeCollections = db.GetCollection<StoreLocationDataModel>(Constants.STORE_LOCATION_TABLE_NAME);
+                try
+                {
+                    return storeCollections.FindOne(x => x.id == id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public async static Task<bool> editStoreLocation(StoreLocationDataModel storeLocation)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var storeCollections = db.GetCollection<StoreLocationDataModel>(Constants.STORE_LOCATION_TABLE_NAME);
+                try
+                {
+                    return storeCollections.Update(storeLocation);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public async static Task<bool> deleteStoreLocation(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var storeCollections = db.GetCollection<StoreLocationDataModel>(Constants.STORE_LOCATION_TABLE_NAME);
+                try
+                {
+                    return storeCollections.Delete(id);
+                }catch (Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static void addRecipes(RecipesDataModel recipe)
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var recipeCollections = db.GetCollection<RecipesDataModel>(Constants.RECIPE_TABLE_NAME);
+                //var recipeItemsCollection = db.GetCollection<RecipesDataModel.RecipeItems>(Constants.RECIPE_ITEMS_TABLE_NAME);
+                try
+                {
+                    int index = recipeCollections.Count() + 1;                   
+                    recipe.id = index.ToString();
+                    recipeCollections.Insert(recipe);
+                    //if(recipe.recipeItems != null && recipe.recipeItems.Any())
+                    //{
+                    //    foreach(var data in recipe.recipeItems)
+                    //    {
+                    //        index2 = recipeItemsCollection.Count() + 1;
+                    //        data.id = index2.ToString();
+                    //        data.recipeId = index.ToString();
+                    //        recipeItemsCollection.Insert(data);
+                    //    }
+                    //}
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                }
+            }
+        }
+
+        public static IEnumerable<RecipesDataModel> getRecipes()
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var recipeCollections = db.GetCollection<RecipesDataModel>(Constants.RECIPE_TABLE_NAME);
+                var recipeItemsCollection = db.GetCollection<RecipesDataModel.RecipeItems>(Constants.RECIPE_ITEMS_TABLE_NAME);
+                try
+                {
+                    var recipes = new List<RecipesDataModel>();
+                        recipes = recipeCollections.Find(Query.All()).ToList();
+                    return recipes;
+                    //var recipeItems = new List<RecipesDataModel.RecipeItems>();
+                    //if (recipes != null && recipes.Any())
+                    //{
+                    //    foreach (var data in recipes)
+                    //    {
+                    //        recipeItems = recipeItemsCollection.Find(x => x.recipeId == data.id).ToList();
+                    //        data.recipeItems = recipeItems;
+                    //    }
+                    //    return recipes;
+                    //}
+                    //else return null;
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editRecipe(RecipesDataModel recipe)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var recipeCollections = db.GetCollection<RecipesDataModel>(Constants.RECIPE_TABLE_NAME);               
+                try
+                {
+                    return recipeCollections.Update(recipe);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task<bool> deleteRecipe(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var recipeCollections = db.GetCollection<RecipesDataModel>(Constants.RECIPE_TABLE_NAME);                
+                try
+                {
+                    return recipeCollections.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+        }
+
+        public static async Task addSoldRecipes(List<RecipesDataModel> recipes)
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var recipeCollection = db.GetCollection<RecipesDataModel>(Constants.SOLD_RECIPES);
+                try
+                { int index = recipeCollection.Count();
+                    foreach (var data in recipes)
+                    {
+                        data.id = (index + 1).ToString();
+                        recipeCollection.Insert(data);
+                        index++;
+                    }                  
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                }
+            }
+        }
+
+        public static async Task<List<RecipesDataModel>> getSoldRecipes()
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var recipeCollections = db.GetCollection<RecipesDataModel>(Constants.SOLD_RECIPES);
+                try
+                {
+                    return recipeCollections.Find(Query.All()).ToList();
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editSoldRecipes(RecipesDataModel recipe)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var recipeCollection = db.GetCollection<RecipesDataModel>(Constants.SOLD_RECIPES);
+                try
+                {
+                    return recipeCollection.Update(recipe);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task<bool> deleteSoldRecipes(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var recipeCollection = db.GetCollection<RecipesDataModel>(Constants.SOLD_RECIPES);
+                try
+                {
+                    return recipeCollection.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task<string> exportDB()
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                try
+                {
+                    string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Constants.DB_NAME);
+                    if (!Directory.Exists(folderPath))
+                        Directory.CreateDirectory(folderPath);
+
+                    string filePath;
+                    var dbTables = db.GetCollectionNames();
+                    foreach(var tableName in dbTables)
+                    {
+                        filePath = Path.Combine(folderPath, tableName);
+                        if (!File.Exists(filePath))
+                        {
+                            using(var myFile = File.Create(filePath))
+                            {
+                                using (var tw = new StreamWriter(myFile))
+                                {
+                                    var json = JsonSerializer.Serialize(new BsonArray(db.Engine.Find(tableName, Query.All())));
+                                    tw.WriteLine(json);
+                                }
+                            }
+                        }else
+                        {
+                            using (var tw = new StreamWriter(filePath, false))
+                            {
+                                var json = JsonSerializer.Serialize(new BsonArray(db.Engine.Find(tableName, Query.All())));
+                                tw.WriteLine(json);
+                            }
+                        }                                                                                               
+                        //File.WriteAllText(filePath, json);
+                    }
+                    return "DB exported successfully.";
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return ex.Message; ;
+                }
+            }
+        }
+
+        public static async Task addTransferRecord(StockTransferRecordDataModel stockTransfer)
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var transferRecordCollection = db.GetCollection<StockTransferRecordDataModel>(Constants.STOCK_RECORD_TABLE_NAME);
+                var stockCollections = db.GetCollection<StockDataModel>(Constants.STOCK_TABLE_NAME);
+                try
+                {
+                    int index = transferRecordCollection.Count() + 1;
+                    stockTransfer.id = index.ToString();
+                    transferRecordCollection.Insert(stockTransfer);
+
+                    if(stockTransfer.stockItems != null && stockTransfer.stockItems.Any())
+                    {
+                        foreach(var data in stockTransfer.stockItems)
+                        {
+                            var stock = stockCollections.FindOne(x => x.id == data.stockId);
+                            if(stock != null && stock.quantity > 0)
+                            {
+                                stock.quantity -= data.quantity;
+                                stockCollections.Update(stock);
+                            }
+                        }
+                    }
+                    
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                }
+            }
+        }
+
+        public static async Task<IEnumerable<StockTransferRecordDataModel>> getStockTransfer()
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var transferRecordCollection = db.GetCollection<StockTransferRecordDataModel>(Constants.STOCK_RECORD_TABLE_NAME);
+                try
+                {
+                    return transferRecordCollection.Find(Query.All());
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editTransferRecord(StockTransferRecordDataModel transferRecord)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var transferRecordCollection = db.GetCollection<StockTransferRecordDataModel>(Constants.STOCK_RECORD_TABLE_NAME);
+                try
+                {
+                    return transferRecordCollection.Update(transferRecord);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+        }
+
+        public static async Task<bool> deleteTransferRecord(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var transferRecordCollection = db.GetCollection<StockTransferRecordDataModel>(Constants.STOCK_RECORD_TABLE_NAME);
+                try
+                {
+                    return transferRecordCollection.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task addReceivedNotes(ReceivedNotesDataModel receivedNotes)
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var notesCollection = db.GetCollection<ReceivedNotesDataModel>(Constants.RECEIVED_NOTES_TABLE_NAME);
+                var purchaseCollection = db.GetCollection<PurchaseOrderDataModel>(Constants.PURCHASE_TABLE_NAME);
+                try
+                {
+                    int index = notesCollection.Count() + 1;
+                    receivedNotes.id = index.ToString();
+                    notesCollection.Insert(receivedNotes);
+                    if (!string.IsNullOrEmpty(receivedNotes.purchaseId))
+                    {
+                        var purchase = purchaseCollection.FindOne(x => x.id == receivedNotes.purchaseId);
+                        if(purchase != null)
+                        {
+                            purchase.status = "Closed";
+                            purchaseCollection.Update(purchase);
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    showMessage(ex);
+                }
+            }
+        }
+
+        public static async Task<IEnumerable<ReceivedNotesDataModel>> getReceivedNotes()
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var notesCollection = db.GetCollection<ReceivedNotesDataModel>(Constants.RECEIVED_NOTES_TABLE_NAME);
+                try
+                {
+                    return notesCollection.Find(Query.All());
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editReceivedNotes(ReceivedNotesDataModel receivedNotes)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var notesCollection = db.GetCollection<ReceivedNotesDataModel>(Constants.RECEIVED_NOTES_TABLE_NAME);
+                try
+                {
+                    return notesCollection.Update(receivedNotes);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task<bool> deleteReceivedNotes(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var notesCollection = db.GetCollection<ReceivedNotesDataModel>(Constants.RECEIVED_NOTES_TABLE_NAME);
+                try
+                {
+                    return notesCollection.Delete(id);
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+        }
+        }
+
+        public static async Task<bool> addAdjustments(StockAdjustmentDataModel adjustments)
+        {
+            using(var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var adjustmentCollections = db.GetCollection<StockAdjustmentDataModel>(Constants.STOCK_ADJUSTMENT_TABLE);
+                var stockCollections = db.GetCollection<StockDataModel>(Constants.STOCK_TABLE_NAME);
+                try
+                {
+                    int index = adjustmentCollections.Count() + 1;
+                    adjustments.id = index.ToString();
+                    adjustmentCollections.Insert(adjustments);
+                    adjustmentCollections.EnsureIndex(x => x.id);
+
+                    var data = stockCollections.FindOne(x => x.id == adjustments.stockId);
+                    if(data != null)
+                    {
+                        data.quantity = adjustments.newQuantity;
+                        stockCollections.Update(data);
+                    }
+
+                    return true;
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+        }
+
+        public static async Task<List<StockAdjustmentDataModel>> getAdjustments()
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var adjustmentCollections = db.GetCollection<StockAdjustmentDataModel>(Constants.STOCK_ADJUSTMENT_TABLE);
+                try
+                {
+                    return adjustmentCollections.Find(Query.All()).ToList();
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<bool> editAdjustment(StockAdjustmentDataModel adjustment)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var adjustmentCollections = db.GetCollection<StockAdjustmentDataModel>(Constants.STOCK_ADJUSTMENT_TABLE);
+                var stockCollections = db.GetCollection<StockDataModel>(Constants.STOCK_TABLE_NAME);
+                try
+                {
+                    var oldAdjustment = adjustmentCollections.FindOne(x => x.id == adjustment.id);
+                    bool success = adjustmentCollections.Update(adjustment);
+                    if (success)
+                    {
+                        var st = stockCollections.FindOne(x => x.id == oldAdjustment.stockId);
+                        if(st != null)
+                        {
+                            st.quantity = oldAdjustment.initialQuantity;
+                            stockCollections.Update(st);
+                        }
+                        var st2 = stockCollections.FindOne(x => x.id == adjustment.stockId);
+                        if(st2 != null)
+                        {
+                            st2.quantity = adjustment.newQuantity;
+                            stockCollections.Update(st2);
+                        }
+                    }
+                    return success;
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+        }
+
+        public static async Task<bool> deleteAdjustment(string id)
+        {
+            using (var db = new LiteDatabase(Constants.DB_NAME))
+            {
+                var adjustmentCollections = db.GetCollection<StockAdjustmentDataModel>(Constants.STOCK_ADJUSTMENT_TABLE);
+                var stockCollections = db.GetCollection<StockDataModel>(Constants.STOCK_TABLE_NAME);
+                try
+                {
+                    var adjustment = adjustmentCollections.FindOne(x => x.id == id);
+
+                    bool success = adjustmentCollections.Delete(id);
+
+                    if (success)
+                    {
+                        var stock = stockCollections.FindOne(x => x.id == adjustment.stockId);
+                        stock.quantity = adjustment.initialQuantity;
+                        stockCollections.Update(stock);
+                    }
+                    return success;
+
+                }catch(Exception ex)
+                {
+                    showMessage(ex);
+                    return false;
+                }
+            }
+        }
+        
     }
 }
+
+
+//var json = JsonSerializer.Serialize(new BsonArray(db.Engine.Find("mycol")));
+
+//db.Engine.Insert("mycol", JsonSerializer.Deserialize(json).AsArray.ToArray());

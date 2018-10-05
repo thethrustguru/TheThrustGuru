@@ -8,14 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TheThrustGuru.Database;
+using TheThrustGuru.DataModels;
 using TheThrustGuru.Logics;
+using TheThrustGuru.Utils;
 
 namespace TheThrustGuru
 {
     public partial class PurchasesForm : Form
     {
-        private string search = "search...";
-        private string searchParam = "Select search parameter...";
+        
 
         public PurchasesForm()
         {
@@ -23,30 +24,56 @@ namespace TheThrustGuru
         }
         
         private void PurchasesForm_Load(object sender, EventArgs e)
+        {          
+            ///loadDataFromDb();
+        }
+
+        private async void loadDataFromDb()
         {
-            waterMarkOnTextBoxLeave(searchTextBox, search);
+            DateTime dateFrom = dateTimePicker1.Value;
+            DateTime dateTo = dateTimePicker2.Value;
 
-            if (!searchParamComboBox.Items.Contains(searchParam))
-                searchParamComboBox.Items.Add(searchParam);
-            searchParamComboBox.Text = searchParam;
-
-            var data = DatabaseOperations.getPurchases();
-            decimal total_price = 0;
-            if(data != null && data.Any())
+            if(dateFrom > dateTo)
             {
-                foreach (var datum in data)
-                {
-                    total_price += datum.grandTotalPrice;
-
-                }                
-                new UpdateDataGridView().addPurchaseToDataGrid(data, this.dataGridView1);
+                MessageBox.Show("Invalid dates selected. ");
+                return;
             }
-            totalPricetextBox.Text = total_price.ToString("C3");
+
+            progressBar1.Visible = true;
+            noDataLabel.Visible = false;
+            var data = await DatabaseOperations.getPurchasedStocksByDate(dateFrom, dateTo);
+            decimal total_price = 0;
+            if (data != null && data.Any())
+            {
+                
+                List<StockDataModel> stocksList = new List<StockDataModel>();
+                List<int> quantityList = new List<int>();
+                foreach (var datum in data)
+                {                    
+                    var stocks = await DatabaseOperations.getStockById(datum.stockId);
+                    total_price = datum.quantityToSupply * stocks.lastCostPrice;
+                    stocksList.Add(stocks);
+                    quantityList.Add(datum.quantityToSupply);
+
+                }
+                progressBar1.Visible = false;
+                new UpdateDataGridView().addPurchaseToDataGrid(stocksList,quantityList, this.dataGridView1);
+            }
+            else noDataLabel.Visible = true;      
+                 
+            totalPricetextBox.Text = FormatPrice.format(total_price);
         }
 
         private void purchaseButton_Click(object sender, EventArgs e)
         {
-            new AddPurchasesForm().ShowDialog();
+            if(new PasscodeForm().ShowDialog() == DialogResult.OK)
+            {
+                new AddPurchasesForm().ShowDialog();
+
+                dataGridView1.Rows.Clear();
+                loadDataFromDb();
+            }
+           
         }
         private void waterMarkOnTextBoxLeave(TextBox textbox, string placeHolder)
         {
@@ -64,32 +91,6 @@ namespace TheThrustGuru
         {
             textbox.Text = String.Empty;
             textbox.ForeColor = Color.Black;
-        }
-
-        private void searchTextBox_Enter(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxEnter(searchTextBox);
-        }
-
-        private void searchTextBox_Leave(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxLeave(searchTextBox, search);
-        }
-
-        private void searchParamComboBox_DropDown(object sender, EventArgs e)
-        {
-            if (searchParamComboBox.Items.Contains(searchParam))
-                searchParamComboBox.Items.Remove(searchParam);
-        }
-
-        private void searchParamComboBox_DropDownClosed(object sender, EventArgs e)
-        {
-            if (searchParamComboBox.SelectedIndex == -1)
-            {
-                if (!searchParamComboBox.Items.Contains(searchParam))
-                    searchParamComboBox.Items.Add(searchParam);
-                searchParamComboBox.Text = searchParam;
-            }
-        }
+        }                          
     }
 }

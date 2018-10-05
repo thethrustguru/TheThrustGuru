@@ -12,22 +12,18 @@ namespace TheThrustGuru
 {
     public partial class Stocks : Form
     {
-               
+
         private StocksRecordForm aForm = new StocksRecordForm();
+        private StockAdjustment adForm = new StockAdjustment();
         public Stocks()
         {
             InitializeComponent();
             changeColorMainForm();
         }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }       
-
+               
         private void Stocks_Load(object sender, EventArgs e)
-        {
-            this.allItemsButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+        {            
+            this.stocksButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
             aForm.MdiParent = this;
             aForm.Show();
         }
@@ -69,29 +65,41 @@ namespace TheThrustGuru
                 if (frm != form)
                 {
                     frm.Dispose();
-                    frm.Close();
+                    //frm.Close();
                 }
             }
-        }
+        }   
 
-        private void AllItemsbutton_Click(object sender, EventArgs e)
+          
+        private void stocksButton_Click(object sender, EventArgs e)
         {
-            this.allItemsButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            this.stocksButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
             if (!aForm.Visible)
             {
-
-                changeColorPanel(this.buttonsPanel, this.allItemsButton);
+                changeColorPanel(this.buttonsPanel, stocksButton);
                 aForm = new StocksRecordForm();
                 aForm.MdiParent = this;
                 aForm.Show();
                 DisposeAllButThis(aForm);
             }
-
         }
 
-        private void setUpStockbutton_Click(object sender, EventArgs e)
-        {             
+        private void stockCategoryButton_Click(object sender, EventArgs e)
+        {            
             new stockCategoryForm().ShowDialog();
+        }
+
+        private void stockAdjustmentButton_Click(object sender, EventArgs e)
+        {
+            stockAdjustmentButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            if (!adForm.Visible)
+            {
+                changeColorPanel(this.buttonsPanel, stockAdjustmentButton);
+                adForm = new StockAdjustment();
+                adForm.MdiParent = this;
+                adForm.Show();
+                DisposeAllButThis(adForm);
+            }
         }
     }
 }

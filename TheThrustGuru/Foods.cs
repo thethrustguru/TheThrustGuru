@@ -11,6 +11,7 @@ using TheThrustGuru.Custom_Controls;
 using TheThrustGuru.Database;
 using TheThrustGuru.DataModels;
 using TheThrustGuru.Logics;
+using TheThrustGuru.Utils;
 
 namespace TheThrustGuru
 {
@@ -73,9 +74,9 @@ namespace TheThrustGuru
 
         private void ItemClicked(object sender, EventArgs e)
         {
-            Button btn = sender as Button;
-            if (btn != null)
-                new UpdateDataGridView().updateSelectedRecipeDataGrid(btn.Name, this.cartDataGridView);
+            //Button btn = sender as Button;
+            //if (btn != null)
+               // new UpdateDataGridView().updateSelectedRecipeDataGrid(btn.Name, this.cartDataGridView);
         }
         private void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
@@ -113,7 +114,7 @@ namespace TheThrustGuru
                     Button button = new Button();
                     button.Click += new EventHandler(ItemClicked);
                     button.ContextMenuStrip = this.contextMenuStrip;
-                    this.foodFlowLayoutPanel.Controls.Add(new RecipeItemPanel(data.name, data.id,data.price.ToString(), button));
+                    //this.foodFlowLayoutPanel.Controls.Add(new RecipeItemPanel(data.name, data.id,FormatPrice.format(data.price), button));
                 }
             }
                 

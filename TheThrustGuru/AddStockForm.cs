@@ -10,139 +10,129 @@ using TheThrustGuru.Utils;
 namespace TheThrustGuru
 {
     public partial class AddStock : Form
-    {
-        private string name = "Stock name";
-        private string desc = "Description";
-        private string costprice = "Cost Price";
-        private string sellingPrice = "Unit Price";
-        private string quantity = "Quantity";
-        private string selectCategory = "Select Category";
-        private string unit = "Unit";
-        private string sku = "Sku";
-        private string vendor = "Select Preffered vendor";
+    {        
         private IEnumerable<VendorDataModel> vendorsInfo;
         private IEnumerable<CategoryDataModel> categories;
+        private IEnumerable<StoreLocationDataModel> storesData;
+        //private bool isEdit;
+        private StockDataModel stockToEdit;
 
-        public ItemsDataModel items { get; set; }
         public AddStock()
         {
+            InitializeComponent();                                
+        }
+
+        public AddStock(StockDataModel stock)
+        {
             InitializeComponent();
-            waterMarkOnTextBoxLeave(this.nameTextBox,name);
-            waterMarkOnTextBoxLeave(this.descTextBox, desc);
-            waterMarkOnTextBoxLeave(this.costPriceTextBox, costprice);
-            waterMarkOnTextBoxLeave(this.quantityTextBox, quantity);
-            waterMarkOnTextBoxLeave(this.sellingPriceTextBox, sellingPrice);
-            waterMarkOnTextBoxLeave(unitTextBox, unit);
-            waterMarkOnTextBoxLeave(skuTextBox, sku);
-                      
+
+            setDataToEdit(stock);
+
+            saveButton.Enabled = false;
+            editButton.Visible = true;
+            deleteButton.Visible = true;
+            this.stockToEdit = stock;
+
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-
-        private void waterMarkOnTextBoxLeave(TextBox textbox, string placeHolder)
-        {
-            if (String.IsNullOrEmpty(textbox.Text) || textbox.Text == placeHolder)
-            {
-                textbox.ForeColor = Color.Gray;
-                textbox.Text = placeHolder;
-            }
-            else
-            {
-                textbox.ForeColor = Color.Black;
-            }
-        }
-        private void waterMarkOnTextBoxEnter(TextBox textbox,String placeholder)
-        {
-            if(textbox.Text == placeholder)
-            {
-                textbox.Text = String.Empty;
-                textbox.ForeColor = Color.Black;
-            }
-           
-        }       
-        private void nameTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void nameTextBox_Leave(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxLeave(this.nameTextBox, name);
-        }
-
-        private void nameTextBox_Enter(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxEnter(this.nameTextBox,name);
-        }
-
-        private void descTextBox_Leave(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxLeave(this.descTextBox, desc);
-        }
-
-        private void descTextBox_Enter(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxEnter(this.descTextBox,desc);
-        }
-
-        private void priceTextBox_Leave(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxLeave(this.costPriceTextBox, costprice);
-        }
-
-        private void priceTextBox_Enter(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxEnter(this.costPriceTextBox, costprice);
-        }
-
-        private void quantityTextBox_Leave(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxLeave(this.quantityTextBox, quantity);
-        }
-
-        private void quantityTextBox_Enter(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxEnter(this.quantityTextBox,quantity);
-        }
-
+      
         private void AddFoodItems_Load(object sender, EventArgs e)
-        {
-            if (!categoryComboBox.Items.Contains(selectCategory))
-                categoryComboBox.Items.Add(selectCategory);
-            categoryComboBox.Text = selectCategory;
-
-            if (!vendorComboBox.Items.Contains(vendor))
-                vendorComboBox.Items.Add(vendor);
-            vendorComboBox.Text = vendor;
-
+        {           
             loadVendors();
+
+            loadCategories();
+
+            loadStores();
+            
         }
 
-        private void validateControls()
+        private void setDataToEdit(StockDataModel stock)
         {
-            if (notValid(this.nameTextBox, name))
+            nameTextBox.Text = stock.name;
+            descTextBox.Text = stock.desc;
+            skuTextBox.Text = stock.sku;
+            unitTextBox.Text = stock.unit;
+            highestCostPriceTextBox.Text = stock.highestCostPrice.ToString();
+            lowestCostPricetextBox.Text = stock.lowestCostPrice.ToString();
+            lastCostPricetextBox.Text = stock.lastCostPrice.ToString();
+            quantityTextBox.Text = stock.quantity.ToString();
+            sellingPriceTextBox.Text = stock.unitPrice.ToString();            
+
+            if (!string.IsNullOrEmpty(stock.vendorId) && vendorsInfo != null && vendorsInfo.Any())
+            {
+                foreach(var data in vendorsInfo)
+                {
+                    if(data.id == stock.vendorId)
+                    {
+                        vendorComboBox.Text = data.name;
+                        break;
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(stock.storeId) && storesData != null && storesData.Any())
+            {
+                foreach (var data in storesData)
+                {
+                    if (data.id == stock.storeId)
+                    {
+                        storeComboBox.Text = data.name;
+                        break;
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(stock.categoryId) && categories != null && categories.Any())
+            {
+                foreach (var data in categories)
+                {
+                    if (data.id == stock.categoryId)
+                    {
+                        categoryComboBox.Text = data.name;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void validateControls(bool isEdit)
+        {
+
+            if (notValid(this.nameTextBox))
             {
                 errorProvider.SetError(this.nameTextBox, "Please provide a valid name");
                 return;
             }
             else errorProvider.Clear();
 
-            if (notValidPrice(this.costPriceTextBox, costprice))
+            if (notValidPrice(this.highestCostPriceTextBox))
             {
-                errorProvider.SetError(this.costPriceTextBox, "Please provide a valid price. Price must be numeric");
+                errorProvider.SetError(this.highestCostPriceTextBox, "Please provide a valid price. Price must be numeric");
                 return;
             }
             else errorProvider.Clear();
-            if (notValidPrice(this.sellingPriceTextBox, sellingPrice))
+            if (notValidPrice(this.sellingPriceTextBox))
             {
                 errorProvider.SetError(this.sellingPriceTextBox, "Please provide a valid price. Price must be numeric");
                 return;
             }
             else errorProvider.Clear();
-            if (notValidPrice(this.quantityTextBox, quantity))
+            if (notValidPrice(lowestCostPricetextBox))
+            {
+                errorProvider.SetError(lowestCostPricetextBox, "Please provide a valid price. Price must be numeric");
+                return;
+            }
+            else errorProvider.Clear();
+            if (notValidPrice(lastCostPricetextBox))
+            {
+                errorProvider.SetError(lastCostPricetextBox, "Please provide a valid price. Price must be numeric");
+                return;
+            }
+            else errorProvider.Clear();
+            if (notValidQty(this.quantityTextBox))
             {
                 errorProvider.SetError(this.quantityTextBox, "Please provide a valid quantity. Quantity must be numeric");
                 return;
@@ -150,63 +140,113 @@ namespace TheThrustGuru
             else errorProvider.Clear();
             if (String.IsNullOrEmpty(categoryComboBox.Text) || String.IsNullOrWhiteSpace(categoryComboBox.Text) || categoryComboBox.Text.ToLower() == "select category")
             {
-                errorProvider.SetError(this.categoryComboBox, "Please provide a valid category");
+                errorProvider.SetError(this.categoryComboBox, "Please select a valid category");
+                return;
+            }
+            else errorProvider.Clear();
+            if (String.IsNullOrEmpty(storeComboBox.Text) || String.IsNullOrWhiteSpace(storeComboBox.Text))
+            {
+                errorProvider.SetError(this.storeComboBox, "Please select a valid store location");
                 return;
             }
             else errorProvider.Clear();
 
-            processData();
+            processData(isEdit);
         }
 
-        private void processData()
+        private void processData(bool isEdit)
         {
             string _name = nameTextBox.Text;
             string _desc = descTextBox.Text;
             string category = categoryComboBox.Text;
             string sku = skuTextBox.Text;
-            string unit = unitTextBox.Text;
-            string vendorId = "", categoryId = "";
-            if (vendorComboBox.SelectedIndex != -1)
-                vendorId = vendorsInfo.ElementAt(vendorComboBox.SelectedIndex).id;            
-            if (categoryComboBox.SelectedIndex != -1)
-                categoryId = categories.ElementAt(categoryComboBox.SelectedIndex).id;
-            decimal  cost_price = 0;
+            string unit = unitTextBox.Text;            
+            string vendorId = "", categoryId = "",storeId = "";
+            int vIndex = vendorComboBox.SelectedIndex;
+            int cIndex = categoryComboBox.SelectedIndex;
+            int sIndex = storeComboBox.SelectedIndex;
+            if ( vIndex != -1)
+            {
+                if(vendorsInfo.Any() && vIndex <= vendorsInfo.Count())
+                vendorId = vendorsInfo.ElementAt(vIndex).id;
+            }                         
+            if (cIndex != -1)
+            {
+                if(categories.Any() && cIndex <= categories.Count())
+                    categoryId = categories.ElementAt(cIndex).id;
+            }
+            if (sIndex != -1)
+            {
+                if (storesData.Any() && sIndex <= storesData.Count())
+                    storeId = storesData.ElementAt(sIndex).id;
+            }
+            decimal  highestCostPrice = 0,lowestCostPrice = 0,lastCostPrice = 0;
             decimal selling_price = 0;
             int quantity = 0;                        
                        
             try
             {
-                cost_price = decimal.Parse(costPriceTextBox.Text);
+                highestCostPrice = decimal.Parse(highestCostPriceTextBox.Text);
+                lowestCostPrice = decimal.Parse(lowestCostPricetextBox.Text);
+                lastCostPrice = decimal.Parse(lastCostPricetextBox.Text);
                 selling_price = decimal.Parse(sellingPriceTextBox.Text);
-                quantity= int.Parse(quantityTextBox.Text);
+                quantity = int.Parse(quantityTextBox.Text);
             }catch(Exception ex)
             {
-
+                MessageBox.Show("Invalid Data");
+                return;
             }
 
-            DatabaseOperations.addStocks(new StockDataModel
+            var stock = new StockDataModel
             {
                 name = _name,
                 desc = _desc,
                 sku = sku,
                 unit = unit,
-                costPrice = cost_price,
+                highestCostPrice = highestCostPrice,
+                lowestCostPrice = lowestCostPrice,
+                lastCostPrice = lastCostPrice,
                 unitPrice = selling_price,
                 quantity = quantity,
                 vendorId = vendorId,
-                categoryId = categoryId
+                categoryId = categoryId,
+                storeId = storeId,
+                storeLocation = storeComboBox.Text,
+                date = DateTime.Now
 
-            });
+            };
 
-            nameTextBox.Clear();
-            descTextBox.Clear();
-            skuTextBox.Clear();
-            unitTextBox.Clear();
-            costPriceTextBox.Clear();
-            sellingPriceTextBox.Clear();          
+            if (isEdit)
+            {
+                if (!MessagePrompt.displayPrompt("Edit", "edit this stock"))
+                    return;
+
+                stock.id = stockToEdit.id;
+                DatabaseOperations.updateStock(stock);
+                MessageBox.Show("Stock Updated successfully");
+                
+            }else
+            {
+                if (!MessagePrompt.displayPrompt("Create New", "create new stock"))
+                    return;
+
+                DatabaseOperations.addStocks(stock);
+                MessageBox.Show("Stocks added successfully");
+
+                nameTextBox.Clear();
+                descTextBox.Clear();
+                skuTextBox.Clear();
+                unitTextBox.Clear();
+                highestCostPriceTextBox.Clear();
+                lowestCostPricetextBox.Clear();
+                lastCostPricetextBox.Clear();
+                sellingPriceTextBox.Clear();
+                quantityTextBox.Clear();
+                nameTextBox.Focus();
+            }                      
         }
 
-       private void loadVendors()
+        private void loadVendors()
         {
             vendorsInfo = DatabaseOperations.getVendors();            
             if(vendorsInfo != null && vendorsInfo.Any())
@@ -230,13 +270,42 @@ namespace TheThrustGuru
             }
         }
 
-        private bool notValid(TextBox textbox, string value)
+        private void loadStores()
         {
-            return (String.IsNullOrEmpty(textbox.Text) || String.IsNullOrWhiteSpace(textbox.Text) || textbox.Text == value);
-        }     
-        private bool notValidPrice(TextBox textbox, string value)
+            storesData = DatabaseOperations.getStores();
+            if(storesData != null && storesData.Any())
+            {
+                foreach(var data in storesData)
+                {
+                    storeComboBox.Items.Add(data.name);
+                }
+            }
+        }
+
+        private bool notValid(TextBox textbox)
+        {
+            return (String.IsNullOrEmpty(textbox.Text) || String.IsNullOrWhiteSpace(textbox.Text));
+        }
+
+        private bool notValidQty(TextBox textbox)
+        {
+            if (String.IsNullOrEmpty(textbox.Text) || String.IsNullOrWhiteSpace(textbox.Text))
+                return true;
+            else
+                try
+                {
+                    int price = int.Parse(textbox.Text);
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    return true;
+                }
+        }    
+
+        private bool notValidPrice(TextBox textbox)
         {            
-            if (String.IsNullOrEmpty(textbox.Text) || String.IsNullOrWhiteSpace(textbox.Text) || textbox.Text == value)
+            if (String.IsNullOrEmpty(textbox.Text) || String.IsNullOrWhiteSpace(textbox.Text))
                 return true;
             else            
                 try
@@ -250,71 +319,24 @@ namespace TheThrustGuru
             
         }
 
-        private void Okbutton_Click(object sender, EventArgs e)
+        private void saveButton_Click(object sender, EventArgs e)
         {
-            validateControls();
+            validateControls(false);
         }
 
-        private void sellingPriceTextBox_Leave(object sender, EventArgs e)
+        private async void deleteButton_Click(object sender, EventArgs e)
         {
-            waterMarkOnTextBoxLeave(this.sellingPriceTextBox, sellingPrice);
+            if (!MessagePrompt.displayPrompt("Delete", "delete this stock"))
+                return;
+
+            MessageBox.Show(await DatabaseOperations.deleteStock(stockToEdit.id) ? "Stock deleted successfully" : 
+                "Stock deletion failed");
+            Close();
         }
 
-        private void sellingPriceTextBox_Enter(object sender, EventArgs e)
+        private void editButton_Click(object sender, EventArgs e)
         {
-            waterMarkOnTextBoxEnter(this.sellingPriceTextBox, sellingPrice);
-        }
-
-        private void categoryComboBox_DropDown(object sender, EventArgs e)
-        {
-            if (categoryComboBox.Items.Contains(selectCategory))
-                categoryComboBox.Items.Remove(selectCategory);        
-        }
-
-        private void categoryComboBox_DropDownClosed(object sender, EventArgs e)
-        {
-            if(categoryComboBox.SelectedIndex == -1)
-            {
-                if (!categoryComboBox.Items.Contains(selectCategory))
-                    categoryComboBox.Items.Add(selectCategory);
-                categoryComboBox.Text = selectCategory;
-            }
-        }
-
-        private void unitTextBox_Enter(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxEnter(unitTextBox, unit);
-        }
-
-        private void unitTextBox_Leave(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxLeave(unitTextBox, unit);
-        }
-
-        private void skuTextBox_Enter(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxEnter(skuTextBox, sku);
-        }
-
-        private void skuTextBox_Leave(object sender, EventArgs e)
-        {
-            waterMarkOnTextBoxLeave(skuTextBox, sku);
-        }
-
-        private void vendorComboBox_DropDown(object sender, EventArgs e)
-        {
-            if (vendorComboBox.Items.Contains(vendor))
-                vendorComboBox.Items.Remove(vendor);
-        }
-
-        private void vendorComboBox_DropDownClosed(object sender, EventArgs e)
-        {
-            if(vendorComboBox.SelectedIndex == -1)
-            {
-                if (!vendorComboBox.Items.Contains(vendor))
-                    vendorComboBox.Items.Add(vendor);
-                vendorComboBox.Text = vendor;
-            }
+            validateControls(true);
         }
     }
 }

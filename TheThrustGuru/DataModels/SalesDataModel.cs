@@ -10,13 +10,12 @@ namespace TheThrustGuru.DataModels
     {
         public string id { get; set; }
         public string stockId { get; set; }
+        public decimal lastCostPrice { get; set; }
+        public decimal soldPrice { get; set; }
         public string receiptId { get; set; }
-        public string date { get; set; }
-        //public string name { get; set; }
-        //public string costPrice { get; set; }
-        //public string soldPrice { get; set; }
-        //public string category { get; set; }
-        //public string store { get; set; }
+        public string storeLocation { get; set; }
+        public DateTime date { get; set; }
+        
         
     }
 }

@@ -34,10 +34,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.setUpStockbutton = new System.Windows.Forms.Button();
-            this.allItemsButton = new System.Windows.Forms.Button();
+            this.stockAdjustmentButton = new System.Windows.Forms.Button();
+            this.stockAnalysisButton = new System.Windows.Forms.Button();
+            this.stockCategoryButton = new System.Windows.Forms.Button();
+            this.stocksButton = new System.Windows.Forms.Button();
             this.buttonsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,10 +49,10 @@
             this.buttonsPanel.Controls.Add(this.label1);
             this.buttonsPanel.Controls.Add(this.label3);
             this.buttonsPanel.Controls.Add(this.label2);
-            this.buttonsPanel.Controls.Add(this.button2);
-            this.buttonsPanel.Controls.Add(this.button1);
-            this.buttonsPanel.Controls.Add(this.setUpStockbutton);
-            this.buttonsPanel.Controls.Add(this.allItemsButton);
+            this.buttonsPanel.Controls.Add(this.stockAdjustmentButton);
+            this.buttonsPanel.Controls.Add(this.stockAnalysisButton);
+            this.buttonsPanel.Controls.Add(this.stockCategoryButton);
+            this.buttonsPanel.Controls.Add(this.stocksButton);
             this.buttonsPanel.Location = new System.Drawing.Point(2, 3);
             this.buttonsPanel.Name = "buttonsPanel";
             this.buttonsPanel.Size = new System.Drawing.Size(154, 519);
@@ -73,6 +73,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(156, 1);
             this.label5.TabIndex = 4;
+            this.label5.Visible = false;
             // 
             // label1
             // 
@@ -98,63 +99,65 @@
             this.label2.Size = new System.Drawing.Size(156, 1);
             this.label2.TabIndex = 4;
             // 
-            // button2
+            // stockAdjustmentButton
             // 
-            this.button2.FlatAppearance.BorderSize = 0;
-            this.button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.ForeColor = System.Drawing.Color.White;
-            this.button2.Location = new System.Drawing.Point(0, 233);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(153, 51);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "Stock Adjustment";
-            this.button2.UseVisualStyleBackColor = true;
+            this.stockAdjustmentButton.FlatAppearance.BorderSize = 0;
+            this.stockAdjustmentButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            this.stockAdjustmentButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.stockAdjustmentButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stockAdjustmentButton.ForeColor = System.Drawing.Color.White;
+            this.stockAdjustmentButton.Location = new System.Drawing.Point(0, 182);
+            this.stockAdjustmentButton.Name = "stockAdjustmentButton";
+            this.stockAdjustmentButton.Size = new System.Drawing.Size(152, 49);
+            this.stockAdjustmentButton.TabIndex = 3;
+            this.stockAdjustmentButton.Text = "Stock Adjustment";
+            this.stockAdjustmentButton.UseVisualStyleBackColor = true;
+            this.stockAdjustmentButton.Click += new System.EventHandler(this.stockAdjustmentButton_Click);
             // 
-            // button1
+            // stockAnalysisButton
             // 
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(0, 181);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(152, 51);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Stock analysis";
-            this.button1.UseVisualStyleBackColor = true;
+            this.stockAnalysisButton.FlatAppearance.BorderSize = 0;
+            this.stockAnalysisButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            this.stockAnalysisButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.stockAnalysisButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stockAnalysisButton.ForeColor = System.Drawing.Color.White;
+            this.stockAnalysisButton.Location = new System.Drawing.Point(1, 235);
+            this.stockAnalysisButton.Name = "stockAnalysisButton";
+            this.stockAnalysisButton.Size = new System.Drawing.Size(151, 45);
+            this.stockAnalysisButton.TabIndex = 3;
+            this.stockAnalysisButton.Text = "Stock analysis";
+            this.stockAnalysisButton.UseVisualStyleBackColor = true;
+            this.stockAnalysisButton.Visible = false;
             // 
-            // setUpStockbutton
+            // stockCategoryButton
             // 
-            this.setUpStockbutton.FlatAppearance.BorderSize = 0;
-            this.setUpStockbutton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.setUpStockbutton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.setUpStockbutton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.setUpStockbutton.ForeColor = System.Drawing.Color.White;
-            this.setUpStockbutton.Location = new System.Drawing.Point(0, 127);
-            this.setUpStockbutton.Name = "setUpStockbutton";
-            this.setUpStockbutton.Size = new System.Drawing.Size(153, 51);
-            this.setUpStockbutton.TabIndex = 3;
-            this.setUpStockbutton.Text = "Stock category";
-            this.setUpStockbutton.UseVisualStyleBackColor = true;
-            this.setUpStockbutton.Click += new System.EventHandler(this.setUpStockbutton_Click);
+            this.stockCategoryButton.FlatAppearance.BorderSize = 0;
+            this.stockCategoryButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            this.stockCategoryButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.stockCategoryButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stockCategoryButton.ForeColor = System.Drawing.Color.White;
+            this.stockCategoryButton.Location = new System.Drawing.Point(0, 127);
+            this.stockCategoryButton.Name = "stockCategoryButton";
+            this.stockCategoryButton.Size = new System.Drawing.Size(153, 51);
+            this.stockCategoryButton.TabIndex = 3;
+            this.stockCategoryButton.Text = "Stock category";
+            this.stockCategoryButton.UseVisualStyleBackColor = true;
+            this.stockCategoryButton.Click += new System.EventHandler(this.stockCategoryButton_Click);
             // 
-            // allItemsButton
+            // stocksButton
             // 
-            this.allItemsButton.FlatAppearance.BorderSize = 0;
-            this.allItemsButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.allItemsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.allItemsButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.allItemsButton.ForeColor = System.Drawing.Color.White;
-            this.allItemsButton.Location = new System.Drawing.Point(0, 75);
-            this.allItemsButton.Name = "allItemsButton";
-            this.allItemsButton.Size = new System.Drawing.Size(153, 49);
-            this.allItemsButton.TabIndex = 3;
-            this.allItemsButton.Text = "Stocks";
-            this.allItemsButton.UseVisualStyleBackColor = true;
-            this.allItemsButton.Click += new System.EventHandler(this.AllItemsbutton_Click);
+            this.stocksButton.FlatAppearance.BorderSize = 0;
+            this.stocksButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            this.stocksButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.stocksButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stocksButton.ForeColor = System.Drawing.Color.White;
+            this.stocksButton.Location = new System.Drawing.Point(0, 75);
+            this.stocksButton.Name = "stocksButton";
+            this.stocksButton.Size = new System.Drawing.Size(153, 49);
+            this.stocksButton.TabIndex = 3;
+            this.stocksButton.Text = "Stocks";
+            this.stocksButton.UseVisualStyleBackColor = true;
+            this.stocksButton.Click += new System.EventHandler(this.stocksButton_Click);
             // 
             // Stocks
             // 
@@ -167,7 +170,6 @@
             this.IsMdiContainer = true;
             this.Name = "Stocks";
             this.ShowIcon = false;
-            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Stocks Record";
             this.Load += new System.EventHandler(this.Stocks_Load);
@@ -181,12 +183,12 @@
         private System.Windows.Forms.Panel buttonsPanel;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button allItemsButton;
+        private System.Windows.Forms.Button stocksButton;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button setUpStockbutton;
+        private System.Windows.Forms.Button stockCategoryButton;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button stockAdjustmentButton;
+        private System.Windows.Forms.Button stockAnalysisButton;
     }
 }

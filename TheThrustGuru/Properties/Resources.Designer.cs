@@ -73,9 +73,29 @@ namespace TheThrustGuru.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap fast_forward_arrows {
+            get {
+                object obj = ResourceManager.GetObject("fast_forward_arrows", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap import {
             get {
                 object obj = ResourceManager.GetObject("import", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap info {
+            get {
+                object obj = ResourceManager.GetObject("info", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -115,7 +135,7 @@ namespace TheThrustGuru.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap refresh_arrow {
             get {
-                object obj = ResourceManager.GetObject("refresh-arrow", resourceCulture);
+                object obj = ResourceManager.GetObject("refresh_arrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

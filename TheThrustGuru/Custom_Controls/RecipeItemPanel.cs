@@ -41,7 +41,7 @@ namespace TheThrustGuru.Custom_Controls
             // 
             //this.recipePriceLabel.Location = new System.Drawing.Point(105, 85);
             //this.recipePriceLabel.Name = "recipePriceLabel" + index.ToString();
-            //this.recipePriceLabel.Size = new System.Drawing.Size(43, 13);           
+            //this.recipePriceLabel.Size = new System.Drawing.Size(43, 13);
             //this.recipePriceLabel.Text = itemPrice;
 
             this.BackColor = System.Drawing.Color.White;
@@ -53,7 +53,7 @@ namespace TheThrustGuru.Custom_Controls
 
         }
 
-        public RecipeItemPanel(string itemName, string id, string itemPrice, Button button)
+        public RecipeItemPanel(string itemName, int id, string itemPrice, Button button)
         {
             //this.button = button;             
 

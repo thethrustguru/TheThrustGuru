@@ -8,34 +8,61 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TheThrustGuru.Database;
+using TheThrustGuru.DataModels;
 using TheThrustGuru.Logics;
 
 namespace TheThrustGuru
 {
     public partial class SuppliersForm : Form
     {
+        private List<SupplierDataModel> suppliers; 
         public SuppliersForm()
         {
             InitializeComponent();
+            this.contextMenuStrip1.ItemClicked += new ToolStripItemClickedEventHandler(contextMenu_ItemClicked);
         }
 
         private void manageItemButton_Click(object sender, EventArgs e)
         {
-            AddSuppliers aForm = new AddSuppliers();
-            DialogResult result = aForm.ShowDialog();
-            this.dataGridView1.Rows.Clear();
-            new UpdateDataGridView().addSuppliersToDataGrid(DatabaseOperations.getSuppliers(), this.dataGridView1);
+            new AddSuppliers().ShowDialog();
+
+            loadFromDb();
         }
 
         private void SuppliersForm_Load(object sender, EventArgs e)
         {
-            new UpdateDataGridView().addSuppliersToDataGrid(DatabaseOperations.getSuppliers(), this.dataGridView1);
+            loadFromDb();
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            int index = dataGridView1.CurrentCell.RowIndex;
-            Console.WriteLine(index);
+            ToolStripItem item = e.ClickedItem;
+            if(item.Text.ToLower() == "edit")
+            {
+                if(dataGridView1.CurrentCell != null)
+                {
+                    int index = dataGridView1.CurrentCell.RowIndex;
+                    if(suppliers != null && suppliers.Any())
+                    {
+                        var data = suppliers.ElementAt(index);
+                        new AddSuppliers(data).ShowDialog();
+
+                        loadFromDb();
+                    }
+                }
+            }
+        }       
+
+        private void loadFromDb()
+        {
+            dataGridView1.Rows.Clear();
+            suppliers = DatabaseOperations.getSuppliers().ToList();
+            new UpdateDataGridView().addSuppliersToDataGrid(suppliers, dataGridView1);
+        }
+
+        private void refereshButton_Click(object sender, EventArgs e)
+        {
+            loadFromDb();
         }
     }
 }

@@ -22,10 +22,11 @@ namespace TheThrustGuru
         private string desc = "Description";
         private string price = "Price";
         private string selectFood = "Select food items...";
-        private bool isEdit = false;
-        private IEnumerable<FoodItemsDataModel.FoodItemModel> data;
-        private List<RecipeDataModel.RecipeData.items> recipeFoodItems = new List<RecipeDataModel.RecipeData.items>();
-        public List<RecipeDataModel.RecipeData> recipeDataList = new List<RecipeDataModel.RecipeData>();
+        private IEnumerable<CategoryDataModel> categories;
+        private IEnumerable<StockDataModel> stocks;
+        private List<StockDataModel> selectedStocksList = new List<StockDataModel>();
+        private List<int> selectedQuantityList = new List<int>();
+        private RecipesDataModel recipeModel;
 
         public AddRecipes()
         {
@@ -34,17 +35,32 @@ namespace TheThrustGuru
             waterMarkOnTextBoxLeave(this.nameTextBox, name);
             waterMarkOnTextBoxLeave(this.descTextBox, desc);
             waterMarkOnTextBoxLeave(this.priceTextBox, price);
+
         }
 
-        public AddRecipes(RecipeDataModel.RecipeData recipe)
+        public AddRecipes(RecipesDataModel recipe)
         {
             InitializeComponent();
+                        
+            nameTextBox.Text = recipe.name;
+            descTextBox.Text = recipe.desc;
+            priceTextBox.Text = recipe.price.ToString();            
+            populateStockList(recipe.recipeItems);
 
-            this.nameTextBox.Text = recipe.recipeName;
-            this.descTextBox.Text = recipe.recipeDesc;
-            this.okButton.Text = "Edit";
-            isEdit = true;
+            editButton.Visible = true;
+            deleteButton.Visible = true;
+            okButton.Enabled = false;       
 
+        }
+
+        private async void populateStockList(List<RecipesDataModel.RecipeItems> recipeItems)
+        {
+            foreach(var dt in recipeItems)
+            {
+                selectedQuantityList.Add(dt.quantity);
+                selectedStocksList.Add(await DatabaseOperations.getStockById(dt.stockId));                
+            }
+            new UpdateDataGridView().addStocksToRecipeDataGridView(selectedStocksList, selectedQuantityList, itemsDataGridView);
         }
 
         private void waterMarkOnTextBoxLeave(TextBox textbox, string placeHolder)
@@ -59,6 +75,7 @@ namespace TheThrustGuru
                 textbox.ForeColor = Color.Black;
             }
         }
+
         private void waterMarkOnTextBoxEnter(TextBox textbox, String placeholder)
         {
             if (textbox.Text == placeholder)
@@ -100,17 +117,33 @@ namespace TheThrustGuru
         }
 
         private void AddRecipes_Load(object sender, EventArgs e)
-        {        
-            data = DatabaseOperations.getData();
-            foreach(var datum in data)
-            {                
-                this.foodItemsComboBox.Items.Add(datum.name);
-               
+        {
+            init();
+        }
+
+        private void init()
+        {
+            categories = DatabaseOperations.getCategory();
+            if (categories != null && categories.Any())
+            {
+                foreach (var data in categories)
+                {
+                    categoryComboBox.Items.Add(data.name);
+                }
             }
 
-            if (!foodItemsComboBox.Items.Contains(selectFood))
-                foodItemsComboBox.Items.Add(selectFood);
-            foodItemsComboBox.Text = selectFood;
+            //stocks = DatabaseOperations.getStocks();
+            //if(stocks != null && stocks.Any())
+            //{
+            //    foreach(var data in stocks)
+            //    {
+            //        foodStocksComboBox.Items.Add(data.name);
+            //    }
+            //}
+
+            if (!foodStocksComboBox.Items.Contains(selectFood))
+                foodStocksComboBox.Items.Add(selectFood);
+            foodStocksComboBox.Text = selectFood;
         }
 
         private void addButton_Click(object sender, EventArgs e)
@@ -118,7 +151,7 @@ namespace TheThrustGuru
             validateControl();
         }
 
-        private void validateData()
+        private void validateData(bool isEdit)
         {
             if (string.IsNullOrWhiteSpace(this.nameTextBox.Text) || this.nameTextBox.Text == name)
             {
@@ -128,61 +161,86 @@ namespace TheThrustGuru
             else errorProvider.Clear();
             if (this.itemsDataGridView.RowCount < 1)
             {
-                errorProvider.SetError(this.itemsDataGridView, "Please add valid foodItems to recipe");
+                errorProvider.SetError(this.itemsDataGridView, "Please add valid stocks to recipe");
                 return;
             }
             else errorProvider.Clear();
+            if(!string.IsNullOrEmpty(priceTextBox.Text) && !string.IsNullOrWhiteSpace(priceTextBox.Text))
+            {
+                try
+                {
+                    decimal value = decimal.Parse(priceTextBox.Text);
+                    errorProvider.Clear();
+                }catch(Exception ex)
+                {
+                    errorProvider.SetError(priceTextBox,"Please provide a valid price");
+                    return;
+                }
+            }else
+            {
+                errorProvider.SetError(priceTextBox, "Please provide a valid price");
+                return;
+            }
 
-            processData();
+            processData(isEdit);
         }
 
-        private async void processData()
+        private async void processData(bool isEdit)
         {
-                        
-            RecipeDataModel.RecipeData recipeData = new RecipeDataModel.RecipeData();
-            recipeData.recipeName = this.nameTextBox.Text;
-            recipeData.itemsData = recipeFoodItems;
+            string name = nameTextBox.Text;
+            decimal price = decimal.Parse(priceTextBox.Text);                                
             string nDesc = this.descTextBox.Text;
+            List<RecipesDataModel.RecipeItems> recipeItems = new List<RecipesDataModel.RecipeItems>();
             if (string.IsNullOrWhiteSpace(nDesc))
                 nDesc = " ";
-            recipeData.recipeDesc = nDesc;         
+                    
           
-
-            //Send recipe to server
-            AppRepo repo = new AppRepo();
-            DialogForm dialogForm = new DialogForm("Creating Recipe...");
-            dialogForm.Show(this);
-            this.Enabled = false;
-           
-            try
+            for(int i = 0; i < selectedStocksList.Count(); i++)
             {
-                RecipeResultDataModel recipeResult = await repo.createRecipe(DatabaseOperations.getToken().token, recipeData);
-                this.Enabled = true;
-                dialogForm.Close();
-
-                if (recipeResult != null && !recipeResult.success)
+                recipeItems.Add(new RecipesDataModel.RecipeItems
                 {
-                    MessageBox.Show(recipeResult.message, "Error Creating Recipe");
-                } else if(recipeResult != null && recipeResult.success)
-                {
-                    recipeData.id = recipeResult.id;
-                    recipeDataList.Add(recipeData);
-                    DatabaseOperations.addRecipe(recipeData);
-                    MessageBox.Show("Recipe Created successfully");
-                    clearControls();
-
-                    //TODO clear data in controls for user to create new recipe
-                }
+                    stockId = selectedStocksList.ElementAt(i).id,
+                    quantity = selectedQuantityList.ElementAt(i)
+                });
             }
-            catch (ApiException ex)
-            {
-                MessageBox.Show(ex.Message, "Error Creating Recipe");
-                this.Enabled = true;
-                dialogForm.Close();
-            }                                      
 
-            //this.DialogResult = DialogResult.OK;
-            //this.Close();
+            if (isEdit)
+            {
+                if (!MessagePrompt.displayPrompt("Edit", "edit this recipe"))
+                    return;
+
+                recipeModel.name = name;
+                recipeModel.price = price;
+                recipeModel.desc = desc;                
+                recipeModel.recipeItems = recipeItems;
+
+                bool success = await DatabaseOperations.editRecipe(this.recipeModel);
+                if (!success)
+                {
+                    MessageBox.Show("Data updating not successful");
+                    return;
+                }
+
+                MessageBox.Show("Recipe updated successfully");
+
+            }else
+            {
+                if (!MessagePrompt.displayPrompt("Create New", "create new recipe"))
+                    return;
+
+                DatabaseOperations.addRecipes(new RecipesDataModel
+                {
+                    name = name,
+                    price = price,
+                    desc = nDesc,
+                    dateCreated = DateTime.Now,
+                    recipeItems = recipeItems
+
+                });
+
+                MessageBox.Show("New Recipe created successfully");
+                clearControls();
+            }                                             
         }
 
         private void validateControl()
@@ -193,9 +251,9 @@ namespace TheThrustGuru
                 return;
             }
             else errorProvider.Clear();
-            if (string.IsNullOrWhiteSpace(this.foodItemsComboBox.Text) || foodItemsComboBox.Text == selectFood)
+            if (string.IsNullOrWhiteSpace(this.foodStocksComboBox.Text) || foodStocksComboBox.Text == selectFood)
             {
-                errorProvider.SetError(this.foodItemsComboBox, "Please select an item");
+                errorProvider.SetError(this.foodStocksComboBox, "Please select an item");
                 return;
             }
             else errorProvider.Clear();
@@ -221,30 +279,28 @@ namespace TheThrustGuru
 
         private void addSelectedItem()
         {
-            int index = this.foodItemsComboBox.SelectedIndex;
+            int index = this.foodStocksComboBox.SelectedIndex;
             int quantity = int.Parse(this.quantityTextBox.Text);
 
             //use index to find the fooditem
-            var item = data.ElementAt(index);
-            decimal totalPrice = item.price * quantity;           
+            var item = stocks.ElementAt(index);            
 
-            new UpdateDataGridView().updateAddRecipeDataGrid(new RecipeItems {itemName = item.name,itemId = index,
-            quantity = quantity, totalPrice = totalPrice},this.itemsDataGridView);
+            new UpdateDataGridView().addStocksToRecipeDataGridView(item, quantity, itemsDataGridView);
 
             //add the item to new list of foods
-            RecipeDataModel.RecipeData.items R_items = new RecipeDataModel.RecipeData.items();
-            R_items.quantity = quantity;
-            R_items.foodItems = item;
-            recipeFoodItems.Add(R_items);
+            selectedStocksList.Add(item);
+            selectedQuantityList.Add(quantity);
         }
 
         private void clearControls()
         {
             this.nameTextBox.Clear();
             this.descTextBox.Clear();
-            new UpdateDataGridView().clearDataInDataGridView(this.itemsDataGridView);
+            itemsDataGridView.Rows.Clear(); 
             this.quantityTextBox.Clear();
             this.priceTextBox.Clear();
+            selectedStocksList.Clear();
+            selectedQuantityList.Clear();
 
             waterMarkOnTextBoxLeave(this.nameTextBox, name);
             waterMarkOnTextBoxLeave(this.descTextBox, desc);
@@ -252,9 +308,27 @@ namespace TheThrustGuru
 
         }
 
+        private async void loadStocksByCategory(string categoryId)
+        {
+            progressBar1.Visible = true;
+            noDataLabel.Visible = false;
+            foodStocksComboBox.Items.Clear();
+            stocks = await DatabaseOperations.getStocksByCategoryId(categoryId);
+            if (stocks != null && stocks.Any())
+            {
+                foreach(var data in stocks)
+                {
+                    foodStocksComboBox.Items.Add(data.name);
+                }
+
+            }
+            else noDataLabel.Visible = true;
+            progressBar1.Visible = false;
+        }
+
         private void okButton_Click(object sender, EventArgs e)
         {
-            validateData();            
+            validateData(false);            
         }
 
         private void closeButton_Click(object sender, EventArgs e)
@@ -265,18 +339,47 @@ namespace TheThrustGuru
 
         private void foodItemsComboBox_DropDown(object sender, EventArgs e)
         {
-            if (foodItemsComboBox.Items.Contains(selectFood))
-                foodItemsComboBox.Items.Remove(selectFood);
+            if (foodStocksComboBox.Items.Contains(selectFood))
+                foodStocksComboBox.Items.Remove(selectFood);
         }
 
         private void foodItemsComboBox_DropDownClosed(object sender, EventArgs e)
         {
-            if(foodItemsComboBox.SelectedIndex == -1)
+            if(foodStocksComboBox.SelectedIndex == -1)
             {
-                if (!foodItemsComboBox.Items.Contains(selectFood))
-                    foodItemsComboBox.Items.Add(selectFood);
-                foodItemsComboBox.Text = selectFood;
+                if (!foodStocksComboBox.Items.Contains(selectFood))
+                    foodStocksComboBox.Items.Add(selectFood);
+                foodStocksComboBox.Text = selectFood;
             }
+        }
+
+        private void categoryComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(categoryComboBox.SelectedIndex >= 0)
+            {
+                var category = categories.ElementAt(categoryComboBox.SelectedIndex);
+                loadStocksByCategory(category.id);
+            }
+           
+        }
+
+        private void editButton_Click(object sender, EventArgs e)
+        {
+            validateData(true);
+        }
+
+        private async void deleteButton_Click(object sender, EventArgs e)
+        {
+            if (!MessagePrompt.displayPrompt("Delete", "delete this recipe"))
+                return;
+
+            bool success = await DatabaseOperations.deleteRecipe(this.recipeModel.id);
+            if (!success)
+            {
+                MessageBox.Show("Data deletion failed");
+                return;
+            }
+            Close();
         }
     }
 }

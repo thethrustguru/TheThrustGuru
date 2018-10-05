@@ -10,7 +10,7 @@ namespace TheThrustGuru.Utils
     {
         public static string randomString(int lenght)
         {
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";//abcdefghijklmnopqrstuvwxyz
             var stringChars = new char[lenght];
             var random = new Random();
 

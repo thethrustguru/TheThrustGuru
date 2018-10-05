@@ -18,153 +18,112 @@ namespace TheThrustGuru
 {
     public partial class Recipes : Form
     {
-        private string placeHolder = "Search...";
-        Color DefaultColor; int count;
+        private List<RecipesDataModel> recipeData = new List<RecipesDataModel>();
+        private List<RecipesDataModel> selectedRecipes = new List<RecipesDataModel>();
+        private decimal totalPrice = 0;
 
         public Recipes()
         {
             InitializeComponent();
 
-            // get default color of text
-            DefaultColor = searchRTextBox.ForeColor;
+           
+        }     
 
-            // set search texbox to gray state
-            searchRTextBox.ForeColor = Color.Gray;
-            searchRTextBox.Text = placeHolder;
-
-        }
-
-        private void searchRTextBox_Leave(object sender, EventArgs e)
+        private void displayRecipe()
         {
-            if (String.IsNullOrEmpty(searchRTextBox.Text) || searchRTextBox.Text == placeHolder)
-            {
-                searchRTextBox.ForeColor = Color.Gray;
-                searchRTextBox.Text = placeHolder;
-            }
-            else
-            {
-                searchRTextBox.ForeColor = DefaultColor;
-            }
-        }
-
-        private void searchRTextBox_Enter(object sender, EventArgs e)
-        {
-            searchRTextBox.Text = String.Empty;
-            searchRTextBox.ForeColor = DefaultColor;
-        }
-
-        private void AddRButton_Click(object sender, EventArgs e)
-        {
-
-            AddRecipes addRecipes = new AddRecipes();
-            DialogResult result = addRecipes.ShowDialog();
-
-            //check if result is ok
-            if (result == DialogResult.OK)
-                displayRecipe(addRecipes.recipeDataList);
-
-            //for (int i = 0; i <= 10; i++)
-            //{
-            //    Button button = new Button();
-            //    button.Click += new EventHandler(ItemClicked);
-            //    button.ContextMenuStrip = this.contextMenuStrip;
-            //    RecipeItemPanel rip = new RecipeItemPanel("Egusi melon", "23.34", button);
-            //    this.RecipeFlowLayoutPanel.Controls.Add(rip);
-            //}
-            //this.flowLayoutPanel1.Controls.Add(new RecipeItemPanel("Egusi melon", "23.34", count));
-            //count++;
-        }
-
-        private void displayRecipe(List<RecipeDataModel.RecipeData> recipeData)
-        {            
+            recipeData = DatabaseOperations.getRecipes().ToList();
             if(recipeData != null && recipeData.Any())
-                foreach (var data in recipeData)
+                for (int i = 0; i < recipeData.Count(); i++ )
                 {
                     Button button = new Button();
-                    button.Click += new EventHandler(ItemClicked);
-                    button.ContextMenuStrip = this.ContextMenuStrip;
-                    this.RecipeFlowLayoutPanel.Controls.Add(new RecipeItemPanel(data.recipeName, data.id, button));
+                    button.Click += new EventHandler(ItemClicked);                    
+                    this.RecipeFlowLayoutPanel.Controls.Add(new RecipeItemPanel(recipeData.ElementAt(i).name, i,
+                        FormatPrice.format(recipeData.ElementAt(i).price), button));
                 }
-        }
+        }       
 
-        private void displayRecipe(IEnumerable<RecipeDataModel.RecipeData> recipeData)
-        {
-            if(recipeData != null && recipeData.Any())//
-                foreach (var data in recipeData)
-                {
-                    Button button = new Button();
-                    button.Click += new EventHandler(ItemClicked);
-                    button.ContextMenuStrip = this.ContextMenuStrip;
-                    this.RecipeFlowLayoutPanel.Controls.Add(new RecipeItemPanel(data.recipeName, data.id, button));
-                }   
-        }
-
-        private void isBusy(bool value)
-        {
-            this.progressBar.Visible = value;
-        }
+       
         private void ItemClicked(object sender, EventArgs e)
         {
             Button btn = sender as Button;
-            if(btn != null)            
-                new UpdateDataGridView().updateSelectedRecipeDataGrid(btn.Name, this.cartDataGridView);
-        }
-
-        private void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            //get the clicked toolstrip item of the contextMenu
-            ToolStripItem item = e.ClickedItem;
-            switch (item.Text.ToLower())
+            if(btn != null)
             {
-                case "edit":
-                    {
-                        //TODO edit recipe and update server and db
-                        break;
-                    }
-                case "delete":
-                    {
-                        Control c = this.contextMenuStrip.SourceControl;
-                        if (c != null)
-                        {
-                            Control p = c.Parent;
-                            this.RecipeFlowLayoutPanel.Controls.Remove(p);
-                            //TODO delete recipe from db and server
-                        }
-                        break;
-                    }
-            }           
-           
+                try
+                {
+                    int index = int.Parse(btn.Tag.ToString());
+                    var data = recipeData.ElementAt(index);
+                    data.dateCreated = DateTime.Now;
+                    data.soldBy = "Cashier 1";
+                    new UpdateDataGridView().updateSelectedRecipeDataGrid(data, cartDataGridView);
+                    selectedRecipes.Add(data);
+                    totalPrice += data.price;
+                    totalPriceTextBox.Text = FormatPrice.format(totalPrice);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }            
+                
         }
 
         private void clearButton_Click(object sender, EventArgs e)
         {
-            new UpdateDataGridView().clearDataInDataGridView(this.cartDataGridView);
+            cartDataGridView.Rows.Clear();
+            selectedRecipes.Clear();
+            totalPrice = 0;
+            totalPriceTextBox.Text = FormatPrice.format(totalPrice);
         }
 
         private void Recipes_Load(object sender, EventArgs e)
-        {                      
-            //set clicked event of contextMenu to a function
-            this.contextMenuStrip.ItemClicked += new ToolStripItemClickedEventHandler(contextMenu_ItemClicked);
-
+        {                                 
             //get recipes from db
-            //displayRecipe(DatabaseOperations.getRecipe());
+            displayRecipe();
+            totalPriceTextBox.Text = FormatPrice.format(totalPrice);
+            receiptNoTextBox.Text = GenerateIDs.invoiceId();
         }
 
-        private async void refreshButton_Click(object sender, EventArgs e)
+        private async void validateControls()
         {
-            if (NetworkConnectivity.DnsTest())
+            if(cartDataGridView.RowCount < 1)
             {
-                AppRepo repo = new AppRepo();
-                isBusy(true);
-                var data = DatabaseOperations.getToken();
-                RecipeDataModel recipeDataModel = await repo.getAllRecipe(data.token);
-                isBusy(false);
-                if(recipeDataModel != null && recipeDataModel.status && recipeDataModel.results != null)
-                {
-                    displayRecipe(recipeDataModel.results);
-                    DatabaseOperations.addRecipe(recipeDataModel);
-                }
+                MessageBox.Show("Invalid Items selected","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return;
             }
+
+            await DatabaseOperations.addSoldRecipes(selectedRecipes);
+
+            //TODO print receipt
+            try
+            {
+                Ticket ticket = new Ticket
+                {
+                    receiptDate = DateTime.Now,
+                    amountPayable = totalPrice,
+                    totalPrice = totalPrice,
+                    recipes = selectedRecipes
+                };
+                await ticket.printRecipe();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }            
+
+            cartDataGridView.Rows.Clear();
+            selectedRecipes.Clear();
+            totalPrice = 0;
+            totalPriceTextBox.Text = FormatPrice.format(totalPrice);            
+        }
+
+        private void processData()
+        {
+           
+        }
+
+        private void confirmButton_Click(object sender, EventArgs e)
+        {
+            validateControls();
         }
     }
 }

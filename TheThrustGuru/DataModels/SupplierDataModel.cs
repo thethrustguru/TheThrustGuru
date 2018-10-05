@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace TheThrustGuru.DataModels
 {
-    class SupplierDataModel
+    public class SupplierDataModel
     {
         public string id { get; set; }
         public string name { get; set; }
         public string phone { get; set; }
-        public string category { get; set; }
+        public string email { get; set; }
         public string address { get; set; }
         public string company { get; set; }
         public string other { get; set; }

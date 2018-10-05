@@ -7,6 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TheThrustGuru.Database;
+using TheThrustGuru.DataModels;
+using TheThrustGuru.Logics;
+using TheThrustGuru.Utils;
 
 namespace TheThrustGuru
 {
@@ -14,6 +18,7 @@ namespace TheThrustGuru
     {
         private string searchParam = "Select search parameter...";
         private string search = "search...";
+        private decimal totalPrice;
         public SalesForm()
         {
             InitializeComponent();
@@ -31,6 +36,7 @@ namespace TheThrustGuru
                 textbox.ForeColor = Color.Black;
             }
         }
+
         private void waterMarkOnTextBoxEnter(TextBox textbox)
         {
             textbox.Text = String.Empty;
@@ -50,6 +56,8 @@ namespace TheThrustGuru
             if (!searchParamComboBox.Items.Contains(searchParam))
                 searchParamComboBox.Items.Add(searchParam);
             searchParamComboBox.Text = searchParam;
+
+            loadDataFromDB();
         }
 
         private void searchParamComboBox_DropDownClosed(object sender, EventArgs e)
@@ -70,6 +78,34 @@ namespace TheThrustGuru
         private void searchTextBox_Enter(object sender, EventArgs e)
         {
             waterMarkOnTextBoxEnter(searchTextBox);
+        }
+
+        private async void loadDataFromDB()
+        {
+            progressBar1.Visible = true;
+            var soldStocks = DatabaseOperations.getSoldStocks();
+            var stockList = new List<StockDataModel>();
+            var categoryNames = new List<string>();
+            var storeNames = new List<string>();
+            var dates = new List<DateTime>();
+            StockDataModel stock;
+            StoreLocationDataModel store;
+            if (soldStocks != null && soldStocks.Any())
+            {
+                foreach (var data in soldStocks)
+                {
+                    dates.Add(data.date);
+                    stock = await DatabaseOperations.getStockById(data.stockId);
+                    stockList.Add(stock);
+                    categoryNames.Add(DatabaseOperations.getCategoryName(stock.categoryId));
+                    store = await DatabaseOperations.getStoreById(stock.storeId);
+                    storeNames.Add(store.name);
+                    totalPrice += stock.unitPrice;
+                }
+                totalPricetextBox.Text = FormatPrice.format(totalPrice);
+                new UpdateDataGridView().addSoldItemsToDataGridView(stockList, categoryNames, storeNames, dates, dataGridView1);
+            }
+            progressBar1.Visible = false;
         }
     }
 }

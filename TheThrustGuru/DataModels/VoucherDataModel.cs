@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TheThrustGuru.DataModels
 {
-    class VoucherDataModel
+   public class VoucherDataModel
     {
         public string id  { get;set; }
         public string code { get; set; }

@@ -13,7 +13,7 @@ namespace TheThrustGuru
     public partial class ManageAccountForm : Form
     {
         SuppliersForm sForm = new SuppliersForm();
-        VendorForm vForm = new VendorForm();
+        Clients clForm = new Clients();
         CustomersForm cForm = new CustomersForm();
         SalesRepForm srForm = new SalesRepForm();
         public ManageAccountForm()
@@ -87,14 +87,14 @@ namespace TheThrustGuru
 
         private void vendorButton_Click(object sender, EventArgs e)
         {
-            this.vendorButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            if (!vForm.Visible)
+            this.clientButton.BackColor = Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
+            if (!clForm.Visible)
             {
-                changeColorPanel(this.buttonsPanel, this.vendorButton);
-                vForm = new VendorForm();
-                vForm.MdiParent = this;
-                vForm.Show();
-                DisposeAllButThis(vForm);
+                changeColorPanel(this.buttonsPanel, this.clientButton);
+                clForm = new Clients();
+                clForm.MdiParent = this;
+                clForm.Show();
+                DisposeAllButThis(clForm);
             }
         }
 

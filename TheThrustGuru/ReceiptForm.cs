@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using TheThrustGuru.Database;
 using TheThrustGuru.DataModels;
 using TheThrustGuru.Logics;
+using TheThrustGuru.Utils;
 
 namespace TheThrustGuru
 {
@@ -18,6 +19,7 @@ namespace TheThrustGuru
         private string searchText = "Search...";
         private string searchParam = "Select search parameter";
         private IEnumerable<ReceiptDataModel> receipts;
+        private decimal totalPrice;
         public ReceiptForm()
         {
             InitializeComponent();
@@ -47,7 +49,7 @@ namespace TheThrustGuru
         }
         private void waterMarkOnTextBoxEnter(TextBox textbox)
         {
-            textbox.Text = String.Empty;
+            textbox.Text = string.Empty;
             textbox.ForeColor = Color.Black;
         }
 
@@ -56,6 +58,11 @@ namespace TheThrustGuru
             receipts = DatabaseOperations.getReceipts().ToList();
             if(receipts != null && receipts.Any())
             {
+                foreach(var data in receipts)
+                {
+                    totalPrice += data.amountPayable;
+                }
+                totalPriceTextBox.Text = FormatPrice.format(totalPrice);
                 new UpdateDataGridView().addReceiptsToDataGridView(receipts, dataGridView1);
             }
         }
@@ -103,10 +110,10 @@ namespace TheThrustGuru
                         {
                             var st = await DatabaseOperations.getStockById(datum.stockId);                                 
                             soldStocks.Add(st);
-                            //TODO get Category from category db and add to string list
-                            //TODO updateDataGridView
+                            categoryName.Add(DatabaseOperations.getCategoryName(st.categoryId));                            
                         }
                         progressBar1.Visible = false;
+                        new UpdateDataGridView().addReceiptSoldItemsToDataGridView(soldStocks,soldItems, categoryName, dataGridView2);
                     }
                 }
             }
@@ -121,6 +128,11 @@ namespace TheThrustGuru
         {
             getDataAndDisplay(dataGridView1.CurrentCell.RowIndex);
             
+        }
+
+        private void searchButton_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

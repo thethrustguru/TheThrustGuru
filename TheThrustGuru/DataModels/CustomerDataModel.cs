@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace TheThrustGuru.DataModels
 {
-    class CustomerDataModel
+    public class CustomerDataModel
     {
         public string id { get; set; }
         public string customerName { get; set; }
+        public decimal balance { get; set; }
         public string phone { get; set; }
         public bool isVoucherAvailable { get; set; }
         public string voucherCode { get; set; }

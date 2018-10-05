@@ -10,12 +10,15 @@ using System.Windows.Forms;
 using TheThrustGuru.Database;
 using TheThrustGuru.DataModels;
 using TheThrustGuru.Repository;
+using TheThrustGuru.Stores;
 using TheThrustGuru.Utils;
 
 namespace TheThrustGuru
 {
     public partial class Login : Form
     {
+        private string username = "admin";
+        private string password = "AZ18E5";
         public Login()
         {
             InitializeComponent();
@@ -36,9 +39,132 @@ namespace TheThrustGuru
                 return;
             }
             else errorProvider1.Clear();
-
-            processData();
+            if(UsernameTextBox.Text == username && passwordTextBox.Text == password)
+            {
+                loginAdmin();
+            }
+            //else if(UsernameTextBox.Text == Constants.CLIENT_USERNAME && passwordTextBox.Text == Constants.CLIENT_PASSWORD)
+            //{
+            //    loginClient();
+            //}
+            else
+            {               
+                var loginDetails = DatabaseOperations.getLoginDetails();
+                if (loginDetails != null && loginDetails.Any())
+                {
+                    foreach(var data in loginDetails)
+                    {
+                        if(UsernameTextBox.Text == data.username && passwordTextBox.Text == data.password)
+                        {
+                            login(data);
+                            break;
+                        }
+                    }
+                }else
+                {                    
+                    errorProvider1.SetError(this.UsernameTextBox, "Login was not successful. Try again later");
+                    return;
+                }
+            }           
         }
+
+        private void loginClient(LoginCredentials login)
+        {
+            this.Hide();
+            var clientForm = new ClientForm(login);
+            clientForm.Closed += (s, args) => this.Close();
+            clientForm.Show();
+        }
+
+        private void openRes()
+        {
+            this.Hide();
+            var resForm = new RestuarantMainForm();
+            resForm.Closed += (s, args) => this.Close();
+            resForm.Show();
+        }
+
+        private void loginManager()
+        {
+            this.Hide();
+            var mainform = new MainForm("manager");
+            mainform.Closed += (s, args) => this.Close();
+            mainform.Show();
+        }
+
+        private void loginAdmin()
+        {
+            this.Hide();
+            var mainform = new MainForm();
+            mainform.Closed += (s, args) => this.Close();
+            mainform.Show();
+        }
+
+        private void login(LoginCredentials login)
+        {
+            //"Admin","Supervisor","Audit","Manager","Staff"
+            // "Bar", "Bakery", "Hotel", "Laundry", "Restuarant", "Park"
+
+            switch (login.role.ToLower())
+            {
+                case "supervisor":
+                    {
+                        switch (login.storeLocation.ToLower())
+                        {
+                            case "restuarant":
+                                {
+                                    openRes();
+                                }
+                                break;
+                            default:
+                                {
+                                    loginClient(login);
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case "manager":
+                    {
+                        loginManager();                        
+                        break;
+                    }
+                case "audit":
+                    {
+                        switch (login.storeLocation.ToLower())
+                        {
+                            case "restuarant":
+                                {
+                                    openRes();
+                                }
+                                break;
+                            default:
+                                {
+                                    loginClient(login);
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case "staff":
+                    {
+                        switch (login.storeLocation.ToLower())
+                        {
+                            case "restuarant":
+                                {
+                                    openRes();
+                                }
+                                break;
+                            default:
+                                {
+                                    loginClient(login);
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+            }
+        }        
 
         private async void processData()
         {
@@ -85,6 +211,11 @@ namespace TheThrustGuru
         private void signInButton_Click(object sender, EventArgs e)
         {
             validateData();            
+        }
+
+        private void Login_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
